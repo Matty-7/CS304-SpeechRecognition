@@ -64,26 +64,6 @@
 **.webp
 **.xbm
 
-# LaTeX
-**(busy)
-**.aux
-**.bbl
-**.bcf
-**.blg
-**.dvi
-**.fdb_latexmk
-**.fls
-**.gz
-**.log
-**.out
-**.pdf
-**.synctex.gz
-**.xcp
-**.xdv
-**.xml
-**blx.bib
-**comment.cut
-
 # virtual environments
 **.venv/
 
