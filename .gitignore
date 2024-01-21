@@ -64,6 +64,9 @@
 **.webp
 **.xbm
 
+# Videos
+**.wav
+
 # virtual environments
 **.venv/
 
