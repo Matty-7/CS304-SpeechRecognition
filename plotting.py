@@ -27,6 +27,21 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
+def plot_segment(signal,start,end,name):
+    a=np.array(range(start,end))
+    plt.figure(figsize=(10, 4))
+    #print(a)
+    #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+    plt.plot(a,signal[start:end],label='Waveform', color = 'cyan')
+    
+    plt.title(f'{start}th to {end}th frames of the {name}')
+    plt.ylabel("Amplitude")
+    plt.xlabel('Time')
+    plt.grid(True)
+    
+    plt.tight_layout()
+    plt.savefig(f"{name}.png")
+    plt.show()
 
 def plot_waveform_segment(filename, sample_rate):
     # Open the audio file

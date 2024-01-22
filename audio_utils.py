@@ -2,6 +2,7 @@ import math
 import scipy.fftpack
 import numpy as np
 import wave
+from plotting import *
 
 def get_info(filename):
     # Open the audio file with wave module
@@ -43,10 +44,12 @@ def classifyFrame(audioframe,level,background):
     return isSpeech,level,background
 
 def compute_mfcc(signal, sample_rate):
-
+    #plot_segment(signal,0,"Original",400)
+    plot_segment(signal,0,400,"original signal")
     # Pre-Emphasis
     emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
-
+    #plot_segment(emphasized_signal,0,"Emphasized Signal",400)
+    plot_segment(emphasized_signal,0,400,"emphasized signal")
     # Framing
     frame_length = 0.025  # Frame size in seconds
     frame_step = 0.01  # Frame stride in seconds
@@ -58,7 +61,8 @@ def compute_mfcc(signal, sample_rate):
     pad_signal_length = num_frames * frame_step_samples + frame_length_samples
     z = np.zeros(pad_signal_length - len(emphasized_signal))
     padded_signal = np.append(emphasized_signal, z)
-
+    #plot_segment(padded_signal,0,"Padded Signal",400)
+    plot_segment(padded_signal,0,400,"padded signal")
     indices = np.tile(np.arange(0, frame_length_samples), (num_frames, 1)) + np.tile(np.arange(0, num_frames * frame_step_samples, frame_step_samples), (frame_length_samples, 1)).T
     frames = padded_signal[indices.astype(np.int32, copy=False)]
 
