@@ -27,3 +27,31 @@ def plot_waveform(filename):
         plt.xlim(left=time[0], right=time[-1])
         plt.show()
 
+def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512):
+    """Plots a spectrogram from the MFCCs.
+
+    Parameters:
+    - mfccs: The MFCCs of the audio signal.
+    - sample_rate: The sampling rate of the audio signal.
+    - num_mel_bins: The number of Mel bins used to compute the MFCCs.
+    - n_fft: The number of points used in the FFT transform.
+
+    This is a placeholder function and will need to be validated with actual data.
+    """
+    import scipy.fftpack
+    import matplotlib.pyplot as plt
+
+    # Compute the inverse DCT to convert the MFCCs back to the log Mel spectrum
+    log_mel_spectra = scipy.fftpack.idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
+
+    # Optional: Convert the log Mel spectrum back to the log frequency spectrum (not implemented here)
+
+    # Plot the spectrogram
+    plt.figure(figsize=(10, 4))
+    plt.imshow(log_mel_spectra.T, aspect='auto', origin='lower',
+               extent=[0, mfccs.shape[0], 0, sample_rate / 2])
+    plt.title('Spectrogram')
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+    plt.colorbar(format='%+2.0f dB')
+    plt.show()

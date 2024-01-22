@@ -21,6 +21,7 @@ def main():
     print(f"Recording stopped and saved to '{filename}'")
 
     plot_waveform(filename)
+    plot_spectrogram_from_mfcc(mfccs, RATE)
 
 if __name__ == '__main__':
     main()
