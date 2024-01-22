@@ -53,6 +53,7 @@ def plot_waveform_segment(filename, sample_rate):
         plt.ylabel('Amplitude')
         plt.legend()
         plt.grid(True)
+        plt.savefig('samplesegment.png')
         plt.show()
 
 
