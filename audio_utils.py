@@ -1,7 +1,7 @@
 import math
 import scipy.fftpack
 import numpy as np
-
+from plotting import *
 def compute_energy(data):
     energy=10*math.log(sum(sample**2 for sample in data))
     return energy
@@ -34,6 +34,7 @@ def classifyFrame(audioframe,level,background):
 
 def compute_mfcc(signal, sample_rate):
     # Pre-Emphasis
+    plot_segment(signal,1,"Original",0.025,1024)
     emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
 
     # Framing

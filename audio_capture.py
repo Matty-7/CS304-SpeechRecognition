@@ -27,7 +27,8 @@ def capture_audio(stream):
     while isRecording:
         data = stream.read(CHUNK, exception_on_overflow=False)
         #frames.append(data)
-        data_fl = np.frombuffer(data, dtype=np.int16)
+        #data_fl = np.frombuffer(data, dtype=np.int16)
+        data_fl = [struct.unpack('h', data[i:i+2])[0] for i in range(0, len(data), 2)]
         if count==0:   
             level=compute_energy(data_fl)
         if count<=9:
