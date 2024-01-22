@@ -27,7 +27,7 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
-def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512, filename = 'spectrogram.png'):
+def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 
     Parameters:
@@ -38,20 +38,22 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512, f
 
     """
 
-    # Compute the inverse DCT to convert the MFCCs back to the log Mel spectrum
-    log_mel_spectra = idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
+    for num_mel_bins in num_mel_bins_list:
+        # Compute the inverse DCT to convert the MFCCs back to the log Mel spectrum
+        log_mel_spectra = idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
 
-    plt.figure(figsize=(10, 4))
-    plt.imshow(log_mel_spectra.T, aspect='auto', origin='lower',
-               extent=[0, mfccs.shape[0], 0, sample_rate / 2])
-    plt.title('Spectrogram')
-    plt.ylabel('Frequency [Hz]')
-    plt.xlabel('Time [sec]')
-    plt.colorbar(format='%+2.0f dB')
-    plt.savefig(filename)
-    plt.show()
+        # Plotting
+        plt.figure(figsize=(10, 4))
+        plt.imshow(log_mel_spectra.T, aspect='auto', origin='lower',
+                   extent=[0, mfccs.shape[0], 0, sample_rate / 2])
+        plt.title(f'Spectrogram with {num_mel_bins} Mel Bins')
+        plt.ylabel('Frequency [Hz]')
+        plt.xlabel('Time [sec]')
+        plt.colorbar(format='%+2.0f dB')
+        plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
+        plt.show()
 
-def plot_cepstrum(cepstra, sample_rate, num_ceps, filename='cepstrum.png'):
+def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
     Plot the cepstrum of an audio signal.
     :param cepstra: The MFCCs of the audio signal.
@@ -79,5 +81,7 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps, filename='cepstrum.png'):
     plt.colorbar(label='Amplitude')
     
     plt.tight_layout()
-    plt.savefig(filename)
+    plt.savefig("cepstrum.png")
     plt.show()
+
+
