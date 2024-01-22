@@ -1,6 +1,16 @@
 import math
 import scipy.fftpack
 import numpy as np
+import wave
+
+def get_info(filename):
+    # Open the audio file with wave module
+    with wave.open(filename, 'rb') as wave_file:
+        sample_rate = wave_file.getframerate()  # Get the sample rate
+        n_frames = wave_file.getnframes()  # Get the number of frames
+        duration = n_frames / sample_rate  # Calculate the duration of the audio
+
+    return sample_rate, n_frames, duration
 
 def compute_energy(data):
     energy=10*math.log(sum(sample**2 for sample in data))
@@ -44,6 +54,7 @@ def compute_mfcc(signal, sample_rate):
     frame_step_samples = int(round(frame_step * sample_rate))
     num_frames = int(np.ceil(float(np.abs(len(emphasized_signal) - frame_length_samples)) / frame_step_samples))
 
+    # Zero Padding
     pad_signal_length = num_frames * frame_step_samples + frame_length_samples
     z = np.zeros(pad_signal_length - len(emphasized_signal))
     padded_signal = np.append(emphasized_signal, z)
