@@ -26,9 +26,10 @@ def plot_waveform(filename):
         plt.ylabel('Amplitude')
         plt.xlabel('Time (seconds)')
         plt.xlim(left=time[0], right=time[-1])
+        plt.savefig("waveform.png")
         plt.show()
 
-def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512):
+def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512, filename = 'spectrogram.png'):
     """Plots a spectrogram from the MFCCs.
 
     Parameters:
@@ -49,6 +50,7 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512):
     plt.ylabel('Frequency [Hz]')
     plt.xlabel('Time [sec]')
     plt.colorbar(format='%+2.0f dB')
+    plt.savefig(filename)
     plt.show()
 
 def plot_cepstrum(cepstra, sample_rate, num_ceps, filename='cepstrum.png'):
