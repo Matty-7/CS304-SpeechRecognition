@@ -6,9 +6,9 @@ import wave
 def get_info(filename):
     # Open the audio file with wave module
     with wave.open(filename, 'rb') as wave_file:
-        sample_rate = wave_file.getframerate()  # Get the sample rate
-        n_frames = wave_file.getnframes()  # Get the number of frames
-        duration = n_frames / sample_rate  # Calculate the duration of the audio
+        sample_rate = wave_file.getframerate()  
+        n_frames = wave_file.getnframes()  
+        duration = n_frames / sample_rate  
 
     return sample_rate, n_frames, duration
 

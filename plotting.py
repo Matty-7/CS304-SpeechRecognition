@@ -27,6 +27,35 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
+
+def plot_waveform_segment(filename, sample_rate):
+    # Open the audio file
+    with wave.open(filename, 'rb') as audio_file:
+        # Read all frames from the audio file
+        frames = audio_file.readframes(audio_file.getnframes())
+    
+        # Convert binary data to integers
+        audio_data = np.frombuffer(frames, dtype=np.int16)
+        
+        # Extract the segment to plot (adjust the start and end indices as needed)
+        start_sample = 0  # Start sample index
+        end_sample = 400  # End sample index
+        segment = audio_data[start_sample:end_sample]
+        
+        # Generate the x-axis values as sample numbers
+        samples = np.arange(start_sample, end_sample)
+        
+        # Plot the waveform segment
+        plt.figure(figsize=(10, 4))
+        plt.plot(samples, segment, label='Waveform', color = 'cyan')
+        plt.title('400 Sample Segment from Audio Signal')
+        plt.xlabel('Sample Number')
+        plt.ylabel('Amplitude')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 
