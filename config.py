@@ -1,4 +1,3 @@
-# config.py
 import pyaudio
 import sys
 

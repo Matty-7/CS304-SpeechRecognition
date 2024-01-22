@@ -18,8 +18,6 @@ def plot_waveform(filename):
         time = np.linspace(0, len(signal) / framerate, num=len(signal))
 
         plt.style.use('dark_background')  # Set the background theme
-        
-        # Plotting the waveform
         plt.figure(figsize=(12, 4))
         plt.plot(time, signal, color='cyan')
         plt.title('Waveform of the audio')

@@ -68,7 +68,6 @@ def capture_audio(stream):
         
     return frames, mfccs
 
-# Save captured audio to a file
 def save_audio(frames, filename):
     wave_file = wave.open(filename, 'wb')
     wave_file.setnchannels(CHANNELS)

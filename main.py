@@ -1,10 +1,8 @@
-# main.py
 from config import *
 from audio_capture import *
 from plotting import *
 from audio_utils import *
 
-# Handle the audio capture process
 def main():
     audio, stream = start_audio_stream()
     frames, mfccs = capture_audio(stream)
@@ -14,17 +12,14 @@ def main():
     stream.close()
     audio.terminate()
 
-    # Save the recorded frames as a WAV file
     filename = 'captured_speech.wav'
-    
     save_audio(frames, filename)
     print(f"Recording stopped and saved to '{filename}'")
 
     plot_waveform(filename)
     plot_spectrogram_from_mfcc(mfccs, RATE)
     plot_cepstrum(mfccs, RATE, num_ceps=13)
-
-    
+ 
 
 if __name__ == '__main__':
     main()
