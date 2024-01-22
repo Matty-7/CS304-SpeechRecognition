@@ -1,4 +1,5 @@
 # CS304-SpeechRecognition
+
 The group project by Jingheng Huan and Gezhi Wang
 
 ## Description
@@ -8,12 +9,14 @@ This project is designed to capture, process, and visualize audio data, specific
 ## Installation
 
 Before running the project, ensure you have Python installed on your system. You will also need the following libraries:
+
 - numpy
 - scipy
 - matplotlib
 - wave
 
 Install these using pip:
+
 ```bash
 pip install numpy scipy matplotlib wave
 ```
@@ -21,9 +24,11 @@ pip install numpy scipy matplotlib wave
 ## Usage
 
 To use this project, run the `main.py` script:
+
 ```bash
 python main.py
 ```
+
 This will start the audio capture process, compute the MFCC, and plot the waveform, spectrogram, and cepstrum, saving each plot as an image.
 
 ## Files and Functions
