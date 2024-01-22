@@ -18,10 +18,6 @@ def capture_audio(stream):
     print("Recording in progress...")
     frames = []
     
-    silence_threshold = 200  # ambient noise
-    silence_duration = 1 # Duration of silence in seconds to stop recording
-    silence_time = 0
-
     count=0
     sum=0
     level=0
@@ -31,7 +27,7 @@ def capture_audio(stream):
     while isRecording:
         data = stream.read(CHUNK, exception_on_overflow=False)
         #frames.append(data)
-        data_fl = [struct.unpack('h', data[i:i+2])[0] for i in range(0, len(data), 2)]
+        data_fl = np.frombuffer(data, dtype=np.int16)
         if count==0:   
             level=compute_energy(data_fl)
         if count<=9:
@@ -64,8 +60,13 @@ def capture_audio(stream):
             # If we've hit the silence threshold, consider it the end of speech
                         if silent_chunks > 40:
                             isRecording=False
+
+    frames = np.array([np.frombuffer(frame, dtype=np.int16) for frame in frames])
+    # Flatten the array to 1D before passing to compute_mfcc if needed
+    frames = frames.flatten()
+    mfccs = compute_mfcc(frames, RATE)
         
-    return frames
+    return frames, mfccs
 
 # Save captured audio to a file
 def save_audio(frames, filename):

@@ -1,11 +1,13 @@
 # main.py
+from config import *
 from audio_capture import *
 from plotting import *
+from audio_utils import *
 
 # Handle the audio capture process
 def main():
     audio, stream = start_audio_stream()
-    frames = capture_audio(stream)
+    frames, mfccs = capture_audio(stream)
 
     # Stop and close the stream
     stream.stop_stream()
