@@ -43,7 +43,3 @@ If you'd like to contribute to this project, please fork the repository and crea
 This project is licensed under the MIT License - see the `LICENSE.md` file for details.
 
 ## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
