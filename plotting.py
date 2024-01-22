@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import wave
+from scipy.fftpack import *
 
 def plot_waveform(filename):
     
@@ -36,17 +37,11 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512):
     - num_mel_bins: The number of Mel bins used to compute the MFCCs.
     - n_fft: The number of points used in the FFT transform.
 
-    This is a placeholder function and will need to be validated with actual data.
     """
-    import scipy.fftpack
-    import matplotlib.pyplot as plt
 
     # Compute the inverse DCT to convert the MFCCs back to the log Mel spectrum
-    log_mel_spectra = scipy.fftpack.idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
+    log_mel_spectra = idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
 
-    # Optional: Convert the log Mel spectrum back to the log frequency spectrum (not implemented here)
-
-    # Plot the spectrogram
     plt.figure(figsize=(10, 4))
     plt.imshow(log_mel_spectra.T, aspect='auto', origin='lower',
                extent=[0, mfccs.shape[0], 0, sample_rate / 2])
@@ -54,4 +49,35 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins=40, n_fft=512):
     plt.ylabel('Frequency [Hz]')
     plt.xlabel('Time [sec]')
     plt.colorbar(format='%+2.0f dB')
+    plt.show()
+
+def plot_cepstrum(cepstra, sample_rate, num_ceps, filename='cepstrum.png'):
+    """
+    Plot the cepstrum of an audio signal.
+    :param cepstra: The MFCCs of the audio signal.
+    :param sample_rate: The sample rate of the audio signal.
+    :param num_ceps: Number of cepstral coefficients to plot.
+    :param filename: The file name to save the plot.
+    """
+
+    # Use IDCT to convert cepstra back to log spectrum
+    log_spectrum = idct(cepstra, type=2, axis=1, norm='ortho')[:num_ceps]
+
+    # Generate time axis for the frames
+    time_frames = np.arange(log_spectrum.shape[0])
+    
+    # Generate cepstral coefficient axis
+    cepstrum_coeffs = np.arange(log_spectrum.shape[1])
+
+    plt.figure(figsize=(12, 8))
+    plt.imshow(log_spectrum.T, aspect='auto', origin='lower',
+               extent=[time_frames.min(), time_frames.max(), cepstrum_coeffs.min(), cepstrum_coeffs.max()])
+    
+    plt.title('Cepstrum')
+    plt.ylabel('Cepstral Coefficients')
+    plt.xlabel('Frame number')
+    plt.colorbar(label='Amplitude')
+    
+    plt.tight_layout()
+    plt.savefig(filename)
     plt.show()
