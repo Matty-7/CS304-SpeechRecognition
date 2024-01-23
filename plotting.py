@@ -29,16 +29,18 @@ def plot_waveform(filename):
 
 def plot_segment(signal,start,end,name):
     a=np.array(range(start,end))
-    plt.figure(figsize=(10, 4))
+    
     #print(a)
     #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+
+    plt.style.use('dark_background')  # Set the background theme
+    plt.figure(figsize=(10, 4))
     plt.plot(a,signal[start:end],label='Waveform', color = 'cyan')
-    
     plt.title(f'{start}th to {end}th frames of the {name}')
     plt.ylabel("Amplitude")
     plt.xlabel('Sample Number')
+    plt.legend()
     plt.grid(True)
-    plt.style.use('dark_background')  # Set the background theme
     plt.tight_layout()
     plt.savefig(f"{name}.png")
     plt.show()
