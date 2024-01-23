@@ -36,9 +36,9 @@ def plot_segment(signal,start,end,name):
     
     plt.title(f'{start}th to {end}th frames of the {name}')
     plt.ylabel("Amplitude")
-    plt.xlabel('Time')
+    plt.xlabel('Sample Number')
     plt.grid(True)
-    
+    plt.style.use('dark_background')  # Set the background theme
     plt.tight_layout()
     plt.savefig(f"{name}.png")
     plt.show()

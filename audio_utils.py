@@ -44,7 +44,7 @@ def classifyFrame(audioframe,level,background):
     return isSpeech,level,background
 
 def compute_mfcc(signal, sample_rate):
-    #plot_segment(signal,0,"Original",400)
+    
     plot_segment(signal,0,400,"original signal")
     # Pre-Emphasis
     emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
