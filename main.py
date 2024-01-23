@@ -27,10 +27,6 @@ def main():
 
     plot_waveform(filename)
 
-    # Call the function with the first 400 samples
-    plot_waveform_segment(filename, RATE)
-
-
     plot_spectrogram_from_mfcc(mfccs, RATE, num_mel_bins_list=[40, 30, 25])
     plot_cepstrum(mfccs, RATE, num_ceps=13)
  
