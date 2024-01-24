@@ -114,11 +114,13 @@ def mel_filter_banks(sample_rate,pow_frames):
     # Mel Filter Banks
     low_freq_mel = 2595 * np.log10(1 + (133.33 / 700))
     high_freq_mel = 2595 * np.log10(1 + (6855.4976 / 700))
+
     mel_points = np.linspace(low_freq_mel, high_freq_mel, 40 + 2)  # Equally spaced in Mel scale
     hz_points = (700 * (10**(mel_points / 2595) - 1))
-    bin = np.floor((NFFT + 1) * hz_points / sample_rate)
 
+    bin = np.floor((NFFT + 1) * hz_points / sample_rate)
     fbank = np.zeros((40, int(np.floor(NFFT / 2)) + 1))
+
     for m in range(1, 41):
         f_m_minus = int(bin[m - 1])
         f_m = int(bin[m])
@@ -127,6 +129,7 @@ def mel_filter_banks(sample_rate,pow_frames):
             fbank[m - 1, k] = (k - bin[m - 1]) / (bin[m] - bin[m - 1])
         for k in range(f_m, f_m_plus):
             fbank[m - 1, k] = (bin[m + 1] - k) / (bin[m + 1] - bin[m])
+            
     filter_banks = np.dot(pow_frames, fbank.T)
     filter_banks = np.where(filter_banks == 0, np.finfo(float).eps, filter_banks)
     filter_banks = 20 * np.log10(filter_banks)
