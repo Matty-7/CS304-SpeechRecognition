@@ -32,10 +32,10 @@ def plot_segment(frames,i,name):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
     plt.figure(figsize=(10, 4))
-    #print(a)
     #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+
+    plt.style.use('dark_background')  # Set the background theme
     plt.plot(a,frames[i],label='Waveform', color = 'cyan')
-    
     plt.title(f'{i+1}th frame of the {name}')
     plt.ylabel("Amplitude")
     plt.xlabel('Sample Number')
@@ -44,27 +44,29 @@ def plot_segment(frames,i,name):
     plt.tight_layout()
     plt.savefig(f"{name}.png")
     plt.show()
+
 def plot_spectrum(frames,i):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
     plt.figure(figsize=(10, 4))
     #print(a)
     #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+
+    plt.style.use('dark_background')  # Set the background theme
     plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
-    
     plt.title(f'spectrum of the {i}th frame')
     plt.ylabel("Energy")
     plt.xlabel('Frequency')
     plt.grid(True)
-    
     plt.tight_layout()
     plt.savefig(f"spectrum of the {i}th frame.png")
     plt.show()
+
 def plot_mel_spectrum(filter_banks,i):
     frame = filter_banks[i, :]
     mel_points = np.array(range(len(frame)))
 
-# Plotting
+    plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
     plt.plot(mel_points, frame, color = 'cyan')
     plt.title(f'Mel Spectrum for the {i}th Frame')
@@ -120,10 +122,10 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     # Generate cepstral coefficient axis
     cepstrum_coeffs = np.arange(log_spectrum.shape[1])
 
+
     plt.figure(figsize=(12, 8))
     plt.imshow(log_spectrum.T, aspect='auto', origin='lower',
                extent=[time_frames.min(), time_frames.max(), cepstrum_coeffs.min(), cepstrum_coeffs.max()])
-    
     plt.title('Cepstrum')
     plt.ylabel('Cepstral Coefficients')
     plt.xlabel('Frame number')
