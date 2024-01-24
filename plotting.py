@@ -10,10 +10,8 @@ def plot_waveform(filename):
         signal = wave_file.readframes(-1)
         # Convert binary data to integers
         signal = np.frombuffer(signal, dtype='int16')
-        
         # Get the frame rate
         framerate = wave_file.getframerate()
-        
         # Time axis in seconds
         time = np.linspace(0, len(signal) / framerate, num=len(signal))
 
@@ -27,14 +25,14 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
-
 def plot_segment(frames,i,name):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
-    plt.figure(figsize=(10, 4))
+    
     #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
 
     plt.style.use('dark_background')  # Set the background theme
+    plt.figure(figsize=(10, 4))
     plt.plot(a,frames[i],label='Waveform', color = 'cyan')
     plt.title(f'{i+1}th frame of the {name}')
     plt.ylabel("Amplitude")
@@ -48,11 +46,12 @@ def plot_segment(frames,i,name):
 def plot_spectrum(frames,i):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
-    plt.figure(figsize=(10, 4))
+
     #print(a)
     #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
-
+    
     plt.style.use('dark_background')  # Set the background theme
+    plt.figure(figsize=(10, 4))
     plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
     plt.title(f'spectrum of the {i}th frame')
     plt.ylabel("Energy")
@@ -77,7 +76,6 @@ def plot_mel_spectrum(filter_banks,i):
     plt.grid(True)
     plt.show() 
 
-
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 
@@ -90,10 +88,10 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
     """
 
     for num_mel_bins in num_mel_bins_list:
+
         # Compute the inverse DCT to convert the MFCCs back to the log Mel spectrum
         log_mel_spectra = idct(mfccs, type=2, n=num_mel_bins, axis=-1, norm='ortho')
 
-        # Plotting
         plt.figure(figsize=(10, 4))
         plt.imshow(log_mel_spectra.T, aspect='auto', origin='lower',
                    extent=[0, mfccs.shape[0], 0, sample_rate / 2])

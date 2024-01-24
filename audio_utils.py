@@ -42,9 +42,11 @@ def classifyFrame(audioframe,level,background):
     print(f'background1: {background}')
     print(isSpeech)
     return isSpeech,level,background
+
 def emphasize(signal):
     emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
     return emphasized_signal
+
 def segmenting(signal,segment_time,step_time,sample_rate):
     segment_samples = int(round(segment_time * sample_rate))
     segment_step_samples = int(round(step_time * sample_rate))
@@ -56,6 +58,7 @@ def segmenting(signal,segment_time,step_time,sample_rate):
         segmented_signal.append(b)
     segmented_signal=np.array(segmented_signal)
     return segmented_signal
+
 def zero_padding(signal,target_length):
     current_length = len(signal)
     if current_length >= target_length:
@@ -64,6 +67,7 @@ def zero_padding(signal,target_length):
     z = np.zeros(padding_length)
     padded_signal = np.append(signal, z)
     return padded_signal
+
 def windowing(segment,mode="Hamming"):
     n=np.array(range(0,len(segment)))
     M=len(segment)
@@ -78,7 +82,6 @@ def compute_mfcc(signal, sample_rate):
 
     #plot_segment(signal,0,"Original",400)
     
-
     frames=segmenting(signal,0.025,0.01,sample_rate)
     
     #frame_length=len(frames[0])
