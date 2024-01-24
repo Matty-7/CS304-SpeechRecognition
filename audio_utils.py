@@ -128,7 +128,7 @@ def compute_mfcc(signal, sample_rate):
     
     plot_mel_spectrum(filter_banks,0)
 
-    # MFCCs
+    # DCT
     mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
 
     # Mean normalization
