@@ -82,7 +82,7 @@ def zero_padding(signal, target_length):
     padded_signal = np.append(signal, z)
     return padded_signal
 
-def compute_mfcc(signal, sample_rate):
+def preprocessing(signal, sample_rate):
 
     # Framing
     frames=segmenting(signal,0.025,0.01,sample_rate)
@@ -98,14 +98,19 @@ def compute_mfcc(signal, sample_rate):
     plot_segment(windowed_frames,0,"windowed segment")
     
     # Zero padding
+    NFFT = 512
     padded_frames=[zero_padding(frame,NFFT) for frame in windowed_frames]
     plot_segment(padded_frames,0,"padded segment")
+    return padded_frames
 
+def power_spectrum(padded_frames):
     # FFT
     mag_frames = [np.absolute(np.fft.rfft(frame, NFFT)) for frame in padded_frames]
     pow_frames = [((1.0 / NFFT) * (frame ** 2)) for frame in mag_frames]
     plot_spectrum(pow_frames,0, "Power")
-    
+    return pow_frames
+
+def mel_filter_banks(sample_rate,pow_frames):
     # Mel Filter Banks
     low_freq_mel = 2595 * np.log10(1 + (133.33 / 700))
     high_freq_mel = 2595 * np.log10(1 + (6855.4976 / 700))
@@ -127,12 +132,17 @@ def compute_mfcc(signal, sample_rate):
     filter_banks = 20 * np.log10(filter_banks)
     
     plot_mel_spectrum(filter_banks,0)
-
+    return filter_banks
+    
+def mfcc(sample_rate,signal):
     # DCT
+    filter_banks=mel_filter_banks(sample_rate,power_spectrum(preprocessing(signal,sample_rate)))
+
     mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
 
     # Mean normalization
     mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
 
     return mfcc
+
 

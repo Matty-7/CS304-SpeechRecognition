@@ -68,7 +68,7 @@ def capture_audio(stream):
     # Flatten the array to 1D before passing to compute_mfcc if needed
     frames = frames.flatten()
     print(frames)
-    mfccs = compute_mfcc(frames, RATE)
+    mfccs = mfcc(RATE,frames)
         
     return frames, mfccs
 
