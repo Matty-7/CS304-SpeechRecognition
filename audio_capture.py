@@ -67,6 +67,7 @@ def capture_audio(stream):
     frames = np.array([np.frombuffer(frame, dtype=np.int16) for frame in frames])
     # Flatten the array to 1D before passing to compute_mfcc if needed
     frames = frames.flatten()
+    print(frames)
     mfccs = compute_mfcc(frames, RATE)
         
     return frames, mfccs

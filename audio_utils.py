@@ -114,6 +114,7 @@ def compute_mfcc(signal, sample_rate):
     
     # FFT and Power Spectrum
     NFFT = 512
+    print(len(windowed_frames[0]))
     padded_frames=[zero_padding(frame,NFFT) for frame in windowed_frames]
     plot_segment(padded_frames,0,"padded segment")
     mag_frames = [np.absolute(np.fft.rfft(frame, NFFT)) for frame in padded_frames]
