@@ -106,7 +106,7 @@ def compute_mfcc(signal, sample_rate):
     pow_frames = [((1.0 / NFFT) * (frame ** 2)) for frame in mag_frames]
     plot_spectrum(pow_frames,0, "Power")
     
-    # Filter Banks
+    # Mel Filter Banks
     low_freq_mel = 2595 * np.log10(1 + (133.33 / 700))
     high_freq_mel = 2595 * np.log10(1 + (6855.4976 / 700))
     mel_points = np.linspace(low_freq_mel, high_freq_mel, 40 + 2)  # Equally spaced in Mel scale

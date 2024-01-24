@@ -27,9 +27,6 @@ def plot_waveform(filename):
 
 def plot_segment(frames,i,name):
     a=np.array(range(len(frames[i])))
-    #a=np.linspace(0,len(frames[i]),1)
-    
-    #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
 
     plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
@@ -45,11 +42,7 @@ def plot_segment(frames,i,name):
 
 def plot_spectrum(frames,i, name):
     a=np.array(range(len(frames[i])))
-    #a=np.linspace(0,len(frames[i]),1)
 
-    #print(a)
-    #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
-    
     plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
     plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
