@@ -126,7 +126,6 @@ def compute_mfcc(signal, sample_rate):
     filter_banks = np.where(filter_banks == 0, np.finfo(float).eps, filter_banks)
     filter_banks = 20 * np.log10(filter_banks)
     
-    
     plot_mel_spectrum(filter_banks,0)
 
     # MFCCs
