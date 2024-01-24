@@ -27,6 +27,55 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
+
+def plot_segment(frames,i,name):
+    a=np.array(range(len(frames[i])))
+    #a=np.linspace(0,len(frames[i]),1)
+    plt.figure(figsize=(10, 4))
+    #print(a)
+    #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+    plt.plot(a,frames[i],label='Waveform', color = 'cyan')
+    
+    plt.title(f'{i+1}th frame of the {name}')
+    plt.ylabel("Amplitude")
+    plt.xlabel('Sample Number')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f"{name}.png")
+    plt.show()
+def plot_spectrum(frames,i):
+    a=np.array(range(len(frames[i])))
+    #a=np.linspace(0,len(frames[i]),1)
+    plt.figure(figsize=(10, 4))
+    #print(a)
+    #print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
+    plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
+    
+    plt.title(f'spectrum of the {i}th frame')
+    plt.ylabel("Energy")
+    plt.xlabel('Frequency')
+    plt.grid(True)
+    
+    plt.tight_layout()
+    plt.savefig(f"spectrum of the {i}th frame.png")
+    plt.show()
+def plot_mel_spectrum(filter_banks,i):
+    frame = filter_banks[i, :]
+    mel_points = np.array(range(len(frame)))
+
+# Plotting
+    plt.figure(figsize=(10, 4))
+    plt.plot(mel_points, frame, color = 'cyan')
+    plt.title(f'Mel Spectrum for the {i}th Frame')
+    plt.xlabel('Mel Filter Bank')
+    plt.ylabel('Magnitude (dB)')
+    plt.tight_layout()
+    plt.savefig(f'Mel Spectrum for the {i}th Frame')
+    plt.grid(True)
+    plt.show() 
+
+
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 
@@ -82,21 +131,6 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     
     plt.tight_layout()
     plt.savefig("cepstrum.png")
-    plt.show()
-def plot_segment(signal,frame_index,name,frame_time,CHUNK):
-    a=np.array(range(1,CHUNK+1))
-    plt.figure(figsize=(12, 8))
-    print(a)
-    print(signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
-    plt.plot(a,signal[CHUNK*frame_index:CHUNK*(frame_index+1)])
-    
-    plt.title(name)
-    plt.ylabel("Amplitude")
-    plt.xlabel('Time')
-    #plt.colorbar(label='Amplitude')
-    
-    plt.tight_layout()
-    plt.savefig(f"{name}.png")
     plt.show()
 
 
