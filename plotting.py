@@ -113,7 +113,6 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     # Generate cepstral coefficient axis
     cepstrum_coeffs = np.arange(log_spectrum.shape[1])
 
-
     plt.figure(figsize=(12, 8))
     plt.imshow(log_spectrum.T, aspect='auto', origin='lower',
                extent=[time_frames.min(), time_frames.max(), cepstrum_coeffs.min(), cepstrum_coeffs.max()])

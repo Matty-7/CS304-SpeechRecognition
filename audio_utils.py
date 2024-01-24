@@ -3,6 +3,7 @@ import scipy.fftpack
 import numpy as np
 import wave
 from plotting import *
+from config import *
 
 def get_info(filename):
     # Open the audio file with wave module
@@ -97,7 +98,6 @@ def compute_mfcc(signal, sample_rate):
     plot_segment(windowed_frames,0,"windowed segment")
     
     # Zero padding
-    NFFT = 512
     padded_frames=[zero_padding(frame,NFFT) for frame in windowed_frames]
     plot_segment(padded_frames,0,"padded segment")
 
