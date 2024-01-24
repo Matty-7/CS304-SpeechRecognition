@@ -43,7 +43,7 @@ def plot_segment(frames,i,name):
     plt.savefig(f"{name}.png")
     plt.show()
 
-def plot_spectrum(frames,i):
+def plot_spectrum(frames,i, name):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
 
@@ -53,12 +53,12 @@ def plot_spectrum(frames,i):
     plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
     plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
-    plt.title(f'Power spectrum of the {i}th frame')
+    plt.title(f'{name} spectrum of the {i}th frame')
     plt.ylabel("Energy")
     plt.xlabel('Frequency')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"Power spectrum of the {i}th frame.png")
+    plt.savefig(f"{name} spectrum of the {i}th frame.png")
     plt.show()
 
 def plot_mel_spectrum(filter_banks,i):

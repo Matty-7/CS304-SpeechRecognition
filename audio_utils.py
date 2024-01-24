@@ -61,15 +61,6 @@ def segmenting(signal, segment_time, step_time, sample_rate):
     segmented_signal=np.array(segmented_signal)
     return segmented_signal
 
-def zero_padding(signal, target_length):
-    current_length = len(signal)
-    if current_length >= target_length:
-        return signal
-    padding_length = target_length - current_length
-    z = np.zeros(padding_length)
-    padded_signal = np.append(signal, z)
-    return padded_signal
-
 # Minimize the discontinuities at the beginning and end of each frame
 def windowing(segment,mode="Hamming"):
     n=np.array(range(0,len(segment)))
@@ -80,6 +71,15 @@ def windowing(segment,mode="Hamming"):
         return segment*(0.5 - 0.5 * np.cos(2 * np.pi * n / M))
     elif mode=="Blackman":
         return segment*( 0.42 - 0.5 * np.cos(2 * np.pi * n / M) + 0.08 * np.cos(4 * np.pi * n / M))
+
+def zero_padding(signal, target_length):
+    current_length = len(signal)
+    if current_length >= target_length:
+        return signal
+    padding_length = target_length - current_length
+    z = np.zeros(padding_length)
+    padded_signal = np.append(signal, z)
+    return padded_signal
 
 def compute_mfcc(signal, sample_rate):
 
@@ -96,16 +96,15 @@ def compute_mfcc(signal, sample_rate):
     windowed_frames=[windowing(frame) for frame in emphasized_frames]
     plot_segment(windowed_frames,0,"windowed segment")
     
-    # FFT and Power Spectrum
+    # Zero padding
     NFFT = 512
-    print(len(windowed_frames[0]))
     padded_frames=[zero_padding(frame,NFFT) for frame in windowed_frames]
     plot_segment(padded_frames,0,"padded segment")
 
+    # FFT
     mag_frames = [np.absolute(np.fft.rfft(frame, NFFT)) for frame in padded_frames]
-    plot_spectrum(mag_frames,0)
-
     pow_frames = [((1.0 / NFFT) * (frame ** 2)) for frame in mag_frames]
+    plot_spectrum(pow_frames,0, "Power")
     
     # Filter Banks
     low_freq_mel = 2595 * np.log10(1 + (133.33 / 700))
