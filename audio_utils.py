@@ -43,10 +43,12 @@ def classifyFrame(audioframe,level,background):
     print(isSpeech)
     return isSpeech,level,background
 
+# Enhance higher frequencies
 def emphasize(signal):
     emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
     return emphasized_signal
 
+# Framing into short frames
 def segmenting(signal,segment_time,step_time,sample_rate):
     segment_samples = int(round(segment_time * sample_rate))
     segment_step_samples = int(round(step_time * sample_rate))
@@ -59,6 +61,7 @@ def segmenting(signal,segment_time,step_time,sample_rate):
     segmented_signal=np.array(segmented_signal)
     return segmented_signal
 
+
 def zero_padding(signal,target_length):
     current_length = len(signal)
     if current_length >= target_length:
@@ -68,6 +71,7 @@ def zero_padding(signal,target_length):
     padded_signal = np.append(signal, z)
     return padded_signal
 
+# Minimize the discontinuities at the beginning and end of each frame
 def windowing(segment,mode="Hamming"):
     n=np.array(range(0,len(segment)))
     M=len(segment)
@@ -80,39 +84,17 @@ def windowing(segment,mode="Hamming"):
 
 def compute_mfcc(signal, sample_rate):
 
-    #plot_segment(signal,0,"Original",400)
-    
+    # Framing
     frames=segmenting(signal,0.025,0.01,sample_rate)
-    
-    #frame_length=len(frames[0])
     plot_segment(frames,0,"original segment")
 
     # Pre-Emphasis
     emphasized_signal=emphasize(signal)
     emphasized_frames=segmenting(emphasized_signal,0.025,0.01,sample_rate)
-    #plot_segment(emphasized_signal,0,"Emphasized Signal",400)
     plot_segment(emphasized_frames,0,"emphasized segment")
-    windowed_frames=[windowing(frame) for frame in emphasized_frames]
-    
-    
-    # Segmenting
-    #frame_length = 0.025  # Frame size in seconds
-    #frame_step = 0.01  # Frame stride in seconds
-    #frame_length_samples = int(round(frame_length * sample_rate))
-    #frame_step_samples = int(round(frame_step * sample_rate))
-    #num_frames = int(np.ceil(float(np.abs(len(emphasized_signal) - frame_length_samples)) / frame_step_samples))
 
-    # Zero Padding
-    #pad_signal_length = num_frames * frame_step_samples + frame_length_samples
-    #z = np.zeros(pad_signal_length - len(emphasized_signal))
-    #padded_signal = np.append(emphasized_signal, z)
-    #plot_segment(padded_signal,0,"Padded Signal",400)
-    #plot_segment(padded_signal,0,400,"padded signal")
-    #indices = np.tile(np.arange(0, frame_length_samples), (num_frames, 1)) + np.tile(np.arange(0, num_frames * frame_step_samples, frame_step_samples), (frame_length_samples, 1)).T
-    #frames = padded_signal[indices.astype(np.int32, copy=False)]
-    # Window
-    
-    
+    # Windowing
+    windowed_frames=[windowing(frame) for frame in emphasized_frames]
     plot_segment(windowed_frames,0,"windowed segment")
     
     # FFT and Power Spectrum
@@ -143,12 +125,10 @@ def compute_mfcc(signal, sample_rate):
     filter_banks = np.dot(pow_frames, fbank.T)
     filter_banks = np.where(filter_banks == 0, np.finfo(float).eps, filter_banks)
     filter_banks = 20 * np.log10(filter_banks)
-    #test
+    
     
     plot_mel_spectrum(filter_banks,0)
-# Create an array for the Mel filter banks (40 points)
-    
-    #test
+
     # MFCCs
     mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
 
