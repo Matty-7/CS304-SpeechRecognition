@@ -27,7 +27,6 @@ def plot_waveform(filename):
         plt.savefig("waveform.png")
         plt.show()
 
-
 def plot_segment(frames,i,name):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
@@ -44,6 +43,7 @@ def plot_segment(frames,i,name):
     plt.tight_layout()
     plt.savefig(f"{name}.png")
     plt.show()
+
 def plot_spectrum(frames,i):
     a=np.array(range(len(frames[i])))
     #a=np.linspace(0,len(frames[i]),1)
@@ -60,6 +60,7 @@ def plot_spectrum(frames,i):
     plt.tight_layout()
     plt.savefig(f"spectrum of the {i}th frame.png")
     plt.show()
+
 def plot_mel_spectrum(filter_banks,i):
     frame = filter_banks[i, :]
     mel_points = np.array(range(len(frame)))
@@ -74,7 +75,6 @@ def plot_mel_spectrum(filter_banks,i):
     plt.savefig(f'Mel Spectrum for the {i}th Frame')
     plt.grid(True)
     plt.show() 
-
 
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
