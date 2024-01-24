@@ -75,29 +75,6 @@ def windowing(segment,mode="Hamming"):
         return segment*( 0.42 - 0.5 * np.cos(2 * np.pi * n / M) + 0.08 * np.cos(4 * np.pi * n / M))
 
 def compute_mfcc(signal, sample_rate):
-<<<<<<< HEAD
-    
-    plot_segment(signal,0,400,"original signal")
-    # Pre-Emphasis
-    emphasized_signal = np.append(signal[0], signal[1:] - 0.97 * signal[:-1])
-    #plot_segment(emphasized_signal,0,"Emphasized Signal",400)
-    plot_segment(emphasized_signal,0,400,"emphasized signal")
-    # Framing
-    frame_length = 0.025  # Frame size in seconds
-    frame_step = 0.01  # Frame stride in seconds
-    frame_length_samples = int(round(frame_length * sample_rate))
-    frame_step_samples = int(round(frame_step * sample_rate))
-    num_frames = int(np.ceil(float(np.abs(len(emphasized_signal) - frame_length_samples)) / frame_step_samples))
-
-    # Zero Padding
-    pad_signal_length = num_frames * frame_step_samples + frame_length_samples
-    z = np.zeros(pad_signal_length - len(emphasized_signal))
-    padded_signal = np.append(emphasized_signal, z)
-    #plot_segment(padded_signal,0,"Padded Signal",400)
-    plot_segment(padded_signal,0,400,"padded signal")
-    indices = np.tile(np.arange(0, frame_length_samples), (num_frames, 1)) + np.tile(np.arange(0, num_frames * frame_step_samples, frame_step_samples), (frame_length_samples, 1)).T
-    frames = padded_signal[indices.astype(np.int32, copy=False)]
-=======
 
     #plot_segment(signal,0,"Original",400)
     
@@ -121,7 +98,6 @@ def compute_mfcc(signal, sample_rate):
     #frame_length_samples = int(round(frame_length * sample_rate))
     #frame_step_samples = int(round(frame_step * sample_rate))
     #num_frames = int(np.ceil(float(np.abs(len(emphasized_signal) - frame_length_samples)) / frame_step_samples))
->>>>>>> Gezhi-branch
 
     # Zero Padding
     #pad_signal_length = num_frames * frame_step_samples + frame_length_samples

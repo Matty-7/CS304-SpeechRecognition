@@ -29,12 +29,8 @@ def capture_audio(stream):
         print(len(data))
         #frames.append(data)
         #data_fl = np.frombuffer(data, dtype=np.int16)
-<<<<<<< HEAD
         data_fl = np.frombuffer(data, dtype=np.int16) if sys.platform == 'darwin' else [struct.unpack('h', data[i:i+2])[0] for i in range(0, len(data), 2)]  
         print(len(data_fl))
-=======
-        data_fl = [struct.unpack('h', data[i:i+2])[0] for i in range(0, len(data), 2)]
->>>>>>> Gezhi-branch
         if count==0:   
             level=compute_energy(data_fl)
         if count<=9:
