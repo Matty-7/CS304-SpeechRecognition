@@ -53,12 +53,12 @@ def plot_spectrum(frames,i):
     plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
     plt.plot(a,frames[i],label='Spectrum', color = 'cyan')
-    plt.title(f'spectrum of the {i}th frame')
+    plt.title(f'Power spectrum of the {i}th frame')
     plt.ylabel("Energy")
     plt.xlabel('Frequency')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"spectrum of the {i}th frame.png")
+    plt.savefig(f"Power spectrum of the {i}th frame.png")
     plt.show()
 
 def plot_mel_spectrum(filter_banks,i):

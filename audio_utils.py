@@ -49,7 +49,7 @@ def emphasize(signal):
     return emphasized_signal
 
 # Framing into short frames
-def segmenting(signal,segment_time,step_time,sample_rate):
+def segmenting(signal, segment_time, step_time, sample_rate):
     segment_samples = int(round(segment_time * sample_rate))
     segment_step_samples = int(round(step_time * sample_rate))
     num_segment = int(np.ceil(float(np.abs(len(signal) - segment_samples)) / segment_step_samples))
@@ -61,8 +61,7 @@ def segmenting(signal,segment_time,step_time,sample_rate):
     segmented_signal=np.array(segmented_signal)
     return segmented_signal
 
-
-def zero_padding(signal,target_length):
+def zero_padding(signal, target_length):
     current_length = len(signal)
     if current_length >= target_length:
         return signal
@@ -102,10 +101,12 @@ def compute_mfcc(signal, sample_rate):
     print(len(windowed_frames[0]))
     padded_frames=[zero_padding(frame,NFFT) for frame in windowed_frames]
     plot_segment(padded_frames,0,"padded segment")
+
     mag_frames = [np.absolute(np.fft.rfft(frame, NFFT)) for frame in padded_frames]
-    
-    pow_frames = [((1.0 / NFFT) * (frame ** 2)) for frame in mag_frames]
     plot_spectrum(mag_frames,0)
+
+    pow_frames = [((1.0 / NFFT) * (frame ** 2)) for frame in mag_frames]
+    
     # Filter Banks
     low_freq_mel = 2595 * np.log10(1 + (133.33 / 700))
     high_freq_mel = 2595 * np.log10(1 + (6855.4976 / 700))
