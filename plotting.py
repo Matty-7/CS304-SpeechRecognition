@@ -102,7 +102,7 @@ def plot_mel_cepstrum(mfcc):
      # Plotting the Mel Cepstrum coefficients
     plt.figure(figsize=(12, 6))
     plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'yellow')
-    plt.axhline(0, color='green', lw=1)  # Add a horizontal line at y=0
+    plt.axhline(0, color='limegreen', lw=1)  # Add a horizontal line at y=0
     plt.title('Mel Cepstrum Coefficients')
     plt.ylabel('Cepstral Coefficients')
     plt.xlabel('Frame Index')
