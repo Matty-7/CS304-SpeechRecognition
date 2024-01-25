@@ -95,6 +95,18 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
         plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
         plt.show()
 
+def plot_mel_cepstrum(mfcc):
+
+    mfcc_frame = mfcc[0, :13]
+
+     # Plotting the Mel Cepstrum coefficients
+    plt.figure(figsize=(12, 6))
+    plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'cyan')
+    plt.title('Mel Cepstrum Coefficients')
+    plt.ylabel('Cepstral Coefficients')
+    plt.xlabel('Frame Index')
+    plt.show()
+
 def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
     Plot the cepstrum of an audio signal.
@@ -112,7 +124,6 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     
     # Generate cepstral coefficient axis
     cepstrum_coeffs = np.arange(log_spectrum.shape[1])
-
 
     plt.figure(figsize=(12, 8))
     plt.imshow(log_spectrum.T, aspect='auto', origin='lower',
