@@ -143,8 +143,8 @@ def mfcc(sample_rate,signal):
     # DCT
     filter_banks=mel_filter_banks(sample_rate,power_spectrum(preprocessing(signal,sample_rate)))
 
-    mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
-
+    #mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
+    mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')
     # Mean normalization
     mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
 

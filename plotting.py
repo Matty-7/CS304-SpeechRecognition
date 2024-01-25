@@ -80,7 +80,7 @@ def plot_mel_cepstrum(mfcc, i):
     plt.axhline(0, color='limegreen', lw=1)  # Add a horizontal line at y=0
     plt.title(f'Mel Cepstrum Coefficients of the {i+1}th Frame')
     plt.ylabel('Cepstral Coefficients')
-    plt.xlabel('Frame Index')
+    plt.xlabel('Quefrency')
 
     # Add vertical lines from each scatter point to y=0 in cyan color
     for j in range(13):
@@ -184,7 +184,7 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
 
     # Use IDCT to convert cepstra back to log spectrum
-    log_spectrum = idct(cepstra, type=2, axis=1, norm='ortho')
+    log_spectrum = idct(cepstra[:, 1:num_ceps], type=2, axis=1, norm='ortho')
 
     # Generate time axis for the frames
     time_frames = np.arange(log_spectrum.shape[0])
