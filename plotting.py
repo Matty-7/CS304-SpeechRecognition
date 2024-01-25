@@ -21,7 +21,7 @@ def plot_waveform(filename):
         plt.plot(time, signal, color='cyan')
         plt.title('Waveform of the audio')
         plt.ylabel('Amplitude')
-        plt.xlabel('Time (seconds)')
+        plt.xlabel('Time (s)')
         plt.xlim(left=time[0], right=time[-1])
         plt.savefig("waveform.png")
         plt.show()
@@ -160,17 +160,18 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
                    extent=[0, mfccs.shape[0], 0, sample_rate / 2])
         plt.title(f'Spectrogram with {num_mel_bins} Mel Bins')
         plt.ylabel('Frequency [Hz]')
-        plt.xlabel('Time [sec]')
+        plt.xlabel('Time [0.01s]')
         plt.colorbar(format='%+2.0f dB')
         plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
         plt.show()
-def plot_mfccs(mfccs, title='MFCC cepstrum'):
+def plot_mfccs(mfccs, title='MFCC Coefficient'):
     plt.figure(figsize=(10, 4))
     plt.imshow(mfccs.T, aspect='auto', origin='lower', cmap='jet')
     plt.title(title)
     plt.ylabel('MFCC Coefficients')
-    plt.xlabel('Time')
+    plt.xlabel('Time(0.01s)')
     plt.colorbar()
+    plt.savefig('MFCC Coefficient')
     plt.tight_layout()
     plt.show()
 def plot_cepstrum(cepstra, sample_rate, num_ceps):
@@ -183,7 +184,7 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
 
     # Use IDCT to convert cepstra back to log spectrum
-    log_spectrum = idct(cepstra, type=2, axis=1, norm='ortho')[:num_ceps]
+    log_spectrum = idct(cepstra, type=2, axis=1, norm='ortho')
 
     # Generate time axis for the frames
     time_frames = np.arange(log_spectrum.shape[0])
@@ -196,7 +197,7 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
                extent=[time_frames.min(), time_frames.max(), cepstrum_coeffs.min(), cepstrum_coeffs.max()])
     plt.title('Cepstrum')
     plt.ylabel('Cepstral Coefficients')
-    plt.xlabel('Frame number')
+    plt.xlabel('Time(0.01s)')
     plt.colorbar(label='Amplitude')
     
     plt.tight_layout()
