@@ -148,7 +148,7 @@ def mfcc(sample_rate,signal):
     # Mean normalization
     mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
 
-    plot_mel_cepstrum(mfcc)
+    plot_mel_cepstrum(mfcc, 0)
 
     return mfcc
 

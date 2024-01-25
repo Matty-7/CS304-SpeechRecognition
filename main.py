@@ -2,6 +2,7 @@ from config import *
 from audio_capture import *
 from plotting import *
 from audio_utils import *
+from PIL import Image
 
 def main():
     audio, stream = start_audio_stream()
@@ -27,9 +28,12 @@ def main():
 
     plot_waveform(filename)
 
+    plot_merge()
+
     plot_spectrogram_from_mfcc(mfccs, RATE, num_mel_bins_list=[40, 30, 25])
     plot_cepstrum(mfccs, RATE, num_ceps=13)
  
+
 
 if __name__ == '__main__':
     main()
