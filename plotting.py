@@ -101,17 +101,35 @@ def plot_merge():
                    'Log Spectrum of the 1th Frame.png', 
                    'Mel Cepstrum of the 1th Frame.png']
 
-    # 创建一个新的图像，大小为宽度为4个图像宽度，高度为2个图像高度
-    new_image = Image.new('RGB', (4 *  10, 2 * 4))
+    # Open the images
+    images = [Image.open(img_file) for img_file in image_files]
 
-    # 循环遍历图像文件并将它们粘贴到新的图像中
-    for i, img_file in enumerate(image_files):
-        img = Image.open(img_file)
-        # 计算粘贴的位置，每行4个图像
-        x = (i % 4) * 10
-        y = (i // 4) * 4
-        new_image.paste(img, (x, y))
-        new_image.save("merged_image.png")
+    # Determine the size of the merged image
+    widths, heights = zip(*(i.size for i in images))
+
+    # Total dimensions for the merged image
+    total_width = sum(widths[:4])
+    total_height = sum(heights[0:2])
+
+    # Create a new blank image with the total dimensions
+    merged_image = Image.new('RGB', (total_width, total_height))
+
+    # Initialize the starting position
+    x_offset = 0
+    y_offset = 0
+
+    # Place images in two rows
+    for i, img in enumerate(images):
+        # For the second row, reset x_offset and set y_offset to the height of the first image
+        if i == 4:
+            x_offset = 0
+            y_offset = heights[0]
+        
+        # Paste the current image into the merged image
+        merged_image.paste(img, (x_offset, y_offset))
+        x_offset += img.size[0]
+
+    merged_image.save('merged_image.png')
 
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.

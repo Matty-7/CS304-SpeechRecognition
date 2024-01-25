@@ -2,7 +2,6 @@ from config import *
 from audio_capture import *
 from plotting import *
 from audio_utils import *
-from PIL import Image
 
 def main():
     audio, stream = start_audio_stream()
