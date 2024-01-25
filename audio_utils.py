@@ -85,7 +85,7 @@ def zero_padding(signal, target_length):
 def preprocessing(signal, sample_rate):
 
     # Framing
-    frames=segmenting(signal,0.025,0.01,sample_rate)
+    frames=segmenting(signal,0.025,0.0125,sample_rate)
     plot_segment(frames,0,"original segment")
 
     # Pre-Emphasis
