@@ -104,33 +104,41 @@ def plot_merge():
     # Open the images
     images = [Image.open(img_file) for img_file in image_files]
 
-    # Determine the size of the merged image
-    widths, heights = zip(*(i.size for i in images))
+    # Find the smallest width and height among all images
+    min_width = min(img.size[0] for img in images)
+    min_height = min(img.size[1] for img in images)
 
-    # Total dimensions for the merged image
-    total_width = sum(widths[:4])
-    total_height = sum(heights[0:2])
+    # Find the size to which we can scale all images so that they have the same dimension
+    # and are as large as possible within the constraints of the smallest image
+    target_size = (min_width, min_height)
+
+    # Scale all images to the target size
+    scaled_images = [img.resize(target_size, Image.LANCZOS) for img in images]
+
+    # The total width and height of the merged image (two rows of four images each)
+    total_width = target_size[0] * 4
+    total_height = target_size[1] * 2
 
     # Create a new blank image with the total dimensions
     merged_image = Image.new('RGB', (total_width, total_height))
 
-    # Initialize the starting position
-    x_offset = 0
-    y_offset = 0
-
-    # Place images in two rows
-    for i, img in enumerate(images):
-        # For the second row, reset x_offset and set y_offset to the height of the first image
-        if i == 4:
-            x_offset = 0
-            y_offset = heights[0]
+    # Place images in two rows of four
+    for i, img in enumerate(scaled_images):
+        # Calculate x and y coordinates for the image
+        x_offset = (i % 4) * target_size[0]
+        y_offset = (i // 4) * target_size[1]
         
         # Paste the current image into the merged image
         merged_image.paste(img, (x_offset, y_offset))
-        x_offset += img.size[0]
 
     merged_image.save('merged_image.png')
+    merged_image = Image.open('merged_image.png')
 
+    plt.imshow(merged_image)
+    plt.axis('off')
+    plt.show()
+
+    
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 

@@ -33,7 +33,6 @@ def main():
     plot_cepstrum(mfccs, RATE, num_ceps=13)
  
 
-
 if __name__ == '__main__':
     main()
     
