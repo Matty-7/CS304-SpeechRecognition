@@ -164,7 +164,15 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
         plt.colorbar(format='%+2.0f dB')
         plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
         plt.show()
-
+def plot_mfccs(mfccs, title='MFCC cepstrum'):
+    plt.figure(figsize=(10, 4))
+    plt.imshow(mfccs.T, aspect='auto', origin='lower', cmap='jet')
+    plt.title(title)
+    plt.ylabel('MFCC Coefficients')
+    plt.xlabel('Time')
+    plt.colorbar()
+    plt.tight_layout()
+    plt.show()
 def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
     Plot the cepstrum of an audio signal.
