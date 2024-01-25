@@ -54,18 +54,18 @@ def plot_spectrum(frames,i, name):
     plt.savefig(f"{name} spectrum of the {i+1}th frame.png")
     plt.show()
 
-def plot_mel_spectrum(filter_banks,i):
+def plot_mel_spectrum(filter_banks, i, name):
     frame = filter_banks[i, :]
     mel_points = np.array(range(len(frame)))
 
     plt.style.use('dark_background')  # Set the background theme
     plt.figure(figsize=(10, 4))
     plt.plot(mel_points, frame, color = 'cyan')
-    plt.title(f'Mel Spectrum for the {i}th Frame')
+    plt.title(f'{name} Spectrum for the {i+1}th Frame')
     plt.xlabel('Mel Filter Bank')
     plt.ylabel('Magnitude (dB)')
     plt.tight_layout()
-    plt.savefig(f'Mel Spectrum for the {i}th Frame')
+    plt.savefig(f'{name} Spectrum for the {i+1}th Frame')
     plt.grid(True)
     plt.show() 
 

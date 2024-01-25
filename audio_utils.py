@@ -131,10 +131,12 @@ def mel_filter_banks(sample_rate,pow_frames):
             fbank[m - 1, k] = (bin[m + 1] - k) / (bin[m + 1] - bin[m])
             
     filter_banks = np.dot(pow_frames, fbank.T)
+    plot_mel_spectrum(filter_banks, 0, "40 Point")
+
     filter_banks = np.where(filter_banks == 0, np.finfo(float).eps, filter_banks)
     filter_banks = 20 * np.log10(filter_banks)
     
-    plot_mel_spectrum(filter_banks,0)
+    plot_mel_spectrum(filter_banks,0, "Log")
     return filter_banks
     
 def mfcc(sample_rate,signal):
