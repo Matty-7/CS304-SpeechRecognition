@@ -63,7 +63,7 @@ def capture_audio(stream):
             # If we've hit the silence threshold, consider it the end of speech
                         if silent_chunks > 20:
                             isRecording=False
-
+    frames=frames[:-20]
     frames = np.array([np.frombuffer(frame, dtype=np.int16) for frame in frames])
     # Flatten the array to 1D before passing to compute_mfcc if needed
     frames = frames.flatten()
