@@ -73,6 +73,7 @@ def windowing(segment,mode="Hamming"):
     elif mode=="Blackman":
         return segment*( 0.42 - 0.5 * np.cos(2 * np.pi * n / M) + 0.08 * np.cos(4 * np.pi * n / M))
 
+# Pads a given signal with zeros to reach a specified target length
 def zero_padding(signal, target_length):
     current_length = len(signal)
     if current_length >= target_length:
@@ -81,6 +82,7 @@ def zero_padding(signal, target_length):
     z = np.zeros(padding_length)
     padded_signal = np.append(signal, z)
     return padded_signal
+
 
 def preprocessing(signal, sample_rate):
 
