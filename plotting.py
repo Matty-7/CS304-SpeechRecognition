@@ -101,10 +101,18 @@ def plot_mel_cepstrum(mfcc):
 
      # Plotting the Mel Cepstrum coefficients
     plt.figure(figsize=(12, 6))
-    plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'cyan')
+    plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'yellow')
+    plt.axhline(0, color='green', lw=1)  # Add a horizontal line at y=0
     plt.title('Mel Cepstrum Coefficients')
     plt.ylabel('Cepstral Coefficients')
     plt.xlabel('Frame Index')
+
+    # Add vertical lines from each scatter point to y=0 in cyan color
+    for i in range(13):
+        plt.vlines(i, ymin=0, ymax=mfcc_frame[i], color='cyan')
+
+    plt.grid(True)
+    plt.savefig("Mel Cepstrum")
     plt.show()
 
 def plot_cepstrum(cepstra, sample_rate, num_ceps):
