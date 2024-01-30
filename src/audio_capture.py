@@ -94,6 +94,7 @@ def record_digit(digit, attempts=10):
     
     recordings_dir = 'recordings'
     if not os.path.exists(recordings_dir):
+        print(os.path)
         os.makedirs(recordings_dir)
 
     audio, stream = start_audio_stream()
@@ -108,8 +109,8 @@ def record_digit(digit, attempts=10):
             frames = capture_audio(stream)
 
             
-            filename = os.path.join(recordings_dir, f"{digit}-{attempt}.wav")
-
+            #filename = os.path.join(recordings_dir, f"{digit}-{attempt}.wav")
+            filename = os.path.join(f"{digit}-{attempt}.wav")
             
             save_audio(frames, filename)
             print(f"Recording saved to {filename}")
