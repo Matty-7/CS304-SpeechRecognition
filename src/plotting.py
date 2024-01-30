@@ -29,8 +29,8 @@ def plot_waveform(filename):
 
         file_path = os.path.join(os.pardir, "plots", "waveform.png")
         plt.savefig(file_path)
-
-        plt.show()
+        # plt.show()
+        plt.close()
 
 def plot_segment(frames,i,name):
 
@@ -49,7 +49,8 @@ def plot_segment(frames,i,name):
     file_path = os.path.join(os.pardir, "plots", f"{name}.png")
 
     plt.savefig(file_path)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_spectrum(frames,i, name):
 
@@ -66,7 +67,8 @@ def plot_spectrum(frames,i, name):
 
     file_path = os.path.join(os.pardir, "plots", f"{name} Spectrum of the {i+1}th Frame.png")
     plt.savefig(file_path)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_mel_spectrum(filter_banks, i, name):
 
@@ -84,7 +86,8 @@ def plot_mel_spectrum(filter_banks, i, name):
     file_path = os.path.join(os.pardir, "plots", f'{name} Spectrum of the {i+1}th Frame')
     plt.savefig(file_path)
     
-    plt.show() 
+    # plt.show() 
+    plt.close()
 
 def plot_mel_cepstrum(mfcc, i):
 
@@ -106,7 +109,8 @@ def plot_mel_cepstrum(mfcc, i):
 
     file_path = os.path.join(os.pardir, "plots", f"Mel Cepstrum of the {i+1}th Frame.png")
     plt.savefig(file_path)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_merge():
      
@@ -156,7 +160,8 @@ def plot_merge():
 
     plt.imshow(merged_image)
     plt.axis('off')
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
