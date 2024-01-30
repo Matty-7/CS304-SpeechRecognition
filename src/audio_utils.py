@@ -151,11 +151,48 @@ def mfcc(sample_rate,signal):
 
     #mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
     mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')
+
     # Mean normalization
-    mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
+    # mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
+    normalized_mfccs = normalize_features(mfcc)
 
-    plot_mel_cepstrum(mfcc, 0)
+    plot_mel_cepstrum(normalized_mfccs, 0)
 
-    return mfcc
+    return normalized_mfccs
+
+def calculate_delta(mfccs):
+
+    delta_mfccs = np.diff(mfccs, axis=0)
+    delta_mfccs = np.concatenate([np.zeros((1, mfccs.shape[1])), delta_mfccs])
+    normalized_delta_mfccs = normalize_features(delta_mfccs)
+
+    return normalized_delta_mfccs
+
+def calculate_delta_delta(delta_mfccs):
+    # Compute delta-delta MFCC
+    delta_delta_mfccs = np.diff(delta_mfccs, axis=0)
+    delta_delta_mfccs = np.concatenate([np.zeros((1, delta_mfccs.shape[1])), delta_delta_mfccs])
+
+    # Normalize delta-delta MFCC
+    normalized_delta_delta_mfccs = normalize_features(delta_delta_mfccs)
+
+    return normalized_delta_delta_mfccs
+
+def normalize_features(features):
+    
+    mean_subtracted = features - np.mean(features, axis=0)
+    normalized = mean_subtracted / (np.std(features, axis=0) + 1e-8)
+    return normalized
+
+def integrate_mfccs(sample_rate, signal):
+    mfccs = mfcc(sample_rate, signal)
+    delta_mfccs = calculate_delta(mfccs)
+    delta_delta_mfccs = calculate_delta_delta(delta_mfccs)
+
+    # Combine MFCC, delta MFCC, and delta-delta MFCC
+    combined_features = np.concatenate((mfccs, delta_mfccs, delta_delta_mfccs), axis=1)
+
+    return combined_features
+    
 
 
