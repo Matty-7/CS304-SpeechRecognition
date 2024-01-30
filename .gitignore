@@ -21,7 +21,6 @@
 **.ppt*
 **.txt
 **.vsd*
-**.wav
 **.xls*
 
 # File managers
@@ -63,9 +62,6 @@
 **.wdp
 **.webp
 **.xbm
-
-# Videos
-**.wav
 
 # virtual environments
 **.venv/
