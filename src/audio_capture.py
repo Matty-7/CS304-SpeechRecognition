@@ -120,5 +120,3 @@ def record_digit(digit, attempts=10):
         stream.close()
         audio.terminate()
         print(f"All recordings for number {digit} have been saved.")
-
-
