@@ -277,3 +277,39 @@ def get_wav_info(wav_file):
         
     return sample_rate, signal
 
+def load_features(directory):
+    """
+    Loads the feature vectors from the given directory.
+    Assumes the feature vectors are stored in .npy files.
+    """
+    features = {}
+    for filename in os.listdir(directory):
+        if filename.endswith('.npy'):
+            # Extract the base name without the .npy extension
+            name = os.path.splitext(filename)[0]
+            # Load the feature vector from file
+            feature_path = os.path.join(directory, filename)
+            features[name] = np.load(feature_path)
+    return features
+
+def perform_dtw_recognition(templates, tests):
+    """
+    Perform DTW recognition by comparing each test feature vector
+    to each template feature vector.
+    """
+    recognition_results = {}
+
+    for test_name, test_feature in tests.items():
+        best_match = None
+        lowest_distance = float('inf')
+
+        for template_name, template_feature in templates.items():
+            distance = dtw(template_feature, test_feature)
+
+            if distance < lowest_distance:
+                lowest_distance = distance
+                best_match = template_name
+
+        recognition_results[test_name] = best_match
+
+    return recognition_results
