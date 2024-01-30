@@ -25,6 +25,7 @@ def main():
     print(f"Number of frames: {n_frames}")
     print(f"Duration: {duration:.2f} seconds")
 
+
     plot_waveform(filename)
 
     # plot_merge()
