@@ -4,6 +4,15 @@ from audio_capture import *
 from plotting import *
 from audio_utils import *
 
+def calculate_accuracy(recognition_results):
+    # 计算正确识别的数量
+    correct_matches = sum([1 for test_name, matched_template in recognition_results.items() if test_name.split('-')[0] in matched_template])
+    # 计算总的测试数量
+    total_tests = len(recognition_results)
+    # 计算准确率
+    accuracy = correct_matches / total_tests
+    return accuracy
+
 def main():
     # 加载模板特征
     templates_dir = os.path.join(os.pardir, 'features', 'templates')
@@ -19,6 +28,10 @@ def main():
     # 打印识别结果
     for test_name, matched_template in recognition_results.items():
         print(f"Test {test_name} is recognized as {matched_template}")
+
+    # 计算并打印识别正确率
+    accuracy = calculate_accuracy(recognition_results)
+    print(f"Recognition accuracy: {accuracy:.2f}")
 
 if __name__ == "__main__":
     main()
