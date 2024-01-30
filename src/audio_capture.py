@@ -4,6 +4,7 @@ import struct
 from config import *
 from audio_utils import *
 import sys
+import os
 
 # Initialize PyAudio and start the stream
 def start_audio_stream():
@@ -74,7 +75,14 @@ def capture_audio(stream):
     return frames, mfccs
 
 def save_audio(frames, filename):
-    wave_file = wave.open(filename, 'wb')
+
+    recordings_folder = os.path.join(os.pardir, "recordings")
+    if not os.path.exists(recordings_folder):
+        os.makedirs(recordings_folder, exist_ok=True)
+
+    file_path = os.path.join(recordings_folder, filename)
+
+    wave_file = wave.open(file_path, 'wb')
     wave_file.setnchannels(CHANNELS)
     wave_file.setsampwidth(pyaudio.get_sample_size(FORMAT))
     wave_file.setframerate(RATE)
