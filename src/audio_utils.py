@@ -194,5 +194,27 @@ def integrate_mfccs(sample_rate, signal):
 
     return combined_features
     
+def dtw(features1, features2):
+    
+    n = len(features1)
+    m = len(features2)
+    dtw_matrix = np.zeros((n+1, m+1))
 
+    # 初始化无穷大的值
+    for i in range(n+1):
+        for j in range(m+1):
+            dtw_matrix[i, j] = np.inf
+
+    # 初始化第一个元素为0
+    dtw_matrix[0, 0] = 0
+
+    # 动态规划填表
+    for i in range(1, n+1):
+        for j in range(1, m+1):
+            cost = np.linalg.norm(features1[i-1] - features2[j-1])
+            # 取最小的DTW路径
+            dtw_matrix[i, j] = cost + min(dtw_matrix[i-1, j],    # 插入
+                                          dtw_matrix[i, j-1],    # 删除
+                                          dtw_matrix[i-1, j-1])  # 替换
+    return dtw_matrix[n, m]
 
