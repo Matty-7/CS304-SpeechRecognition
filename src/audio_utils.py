@@ -4,10 +4,14 @@ import numpy as np
 import wave
 from plotting import *
 from config import *
+import os
 
 def get_info(filename):
+
+    full_filepath = os.path.join(os.pardir, "recordings", filename)
+
     # Open the audio file with wave module
-    with wave.open(filename, 'rb') as wave_file:
+    with wave.open(full_filepath, 'rb') as wave_file:
         sample_rate = wave_file.getframerate()  
         n_frames = wave_file.getnframes()  
         duration = n_frames / sample_rate  

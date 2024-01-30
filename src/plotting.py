@@ -7,7 +7,9 @@ import os
 
 def plot_waveform(filename):
     
-    with wave.open(filename, 'rb') as wave_file:
+    full_filepath = os.path.join(os.pardir, "recordings", filename)
+
+    with wave.open(full_filepath, 'rb') as wave_file:
         # Extract Raw Audio 
         signal = wave_file.readframes(-1)
         # Convert binary data to integers
@@ -31,6 +33,7 @@ def plot_waveform(filename):
         plt.show()
 
 def plot_segment(frames,i,name):
+
     a=np.array(range(len(frames[i])))
 
     plt.style.use('dark_background')  # Set the background theme
@@ -49,6 +52,7 @@ def plot_segment(frames,i,name):
     plt.show()
 
 def plot_spectrum(frames,i, name):
+
     a=np.array(range(len(frames[i])))
 
     plt.style.use('dark_background')  # Set the background theme
@@ -65,6 +69,7 @@ def plot_spectrum(frames,i, name):
     plt.show()
 
 def plot_mel_spectrum(filter_banks, i, name):
+
     frame = filter_banks[i, :]
     mel_points = np.array(range(len(frame)))
 
@@ -99,20 +104,22 @@ def plot_mel_cepstrum(mfcc, i):
 
     plt.grid(True)
 
-    file_path = os.path.join(os.pardir, "plots", f"Mel_Cepstrum_{i+1}_Frame.png")
+    file_path = os.path.join(os.pardir, "plots", f"Mel Cepstrum of the {i+1}th Frame.png")
     plt.savefig(file_path)
     plt.show()
 
 def plot_merge():
      
-    image_files = ['original segment.png', 
-                   'emphasized segment.png', 
-                   'windowed segment.png', 
-                   'padded segment.png', 
-                   'Power Spectrum of the 1th Frame.png', 
-                   '40 Point Spectrum of the 1th Frame.png', 
-                   'Log Spectrum of the 1th Frame.png', 
-                   'Mel Cepstrum of the 1th Frame.png']
+    image_files = [os.path.join(os.pardir, "plots", img_file) for img_file in [
+        'original segment.png',
+        'emphasized segment.png',
+        'windowed segment.png',
+        'padded segment.png',
+        'Power Spectrum of the 1th Frame.png',
+        '40 Point Spectrum of the 1th Frame.png',
+        'Log Spectrum of the 1th Frame.png',
+        'Mel Cepstrum of the 1th Frame.png'
+    ]]
 
     # Open the images
     images = [Image.open(img_file) for img_file in image_files]
@@ -144,8 +151,8 @@ def plot_merge():
         # Paste the current image into the merged image
         merged_image.paste(img, (x_offset, y_offset))
 
-    merged_image.save('merged_image.png')
-    merged_image = Image.open('merged_image.png')
+    merged_image_path = os.path.join(os.pardir, "plots", "merged_image.png")
+    merged_image.save(merged_image_path)
 
     plt.imshow(merged_image)
     plt.axis('off')
