@@ -43,10 +43,8 @@ def plot_segment(frames,i,name):
     plt.grid(True)
     plt.tight_layout()
 
-    # 构建保存图像的文件路径
     file_path = os.path.join(os.pardir, "plots", f"{name}.png")
 
-    # 保存图像到指定路径
     plt.savefig(file_path)
     plt.show()
 
@@ -61,7 +59,9 @@ def plot_spectrum(frames,i, name):
     plt.xlabel('Frequency')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"{name} Spectrum of the {i+1}th Frame.png")
+
+    file_path = os.path.join(os.pardir, "plots", f"{name} Spectrum of the {i+1}th Frame.png")
+    plt.savefig(file_path)
     plt.show()
 
 def plot_mel_spectrum(filter_banks, i, name):
@@ -74,9 +74,11 @@ def plot_mel_spectrum(filter_banks, i, name):
     plt.title(f'{name} Spectrum of the {i+1}th Frame')
     plt.xlabel('Mel Filter Bank')
     plt.ylabel('Magnitude (dB)')
-    plt.tight_layout()
-    plt.savefig(f'{name} Spectrum of the {i+1}th Frame')
     plt.grid(True)
+    plt.tight_layout()
+    file_path = os.path.join(os.pardir, "plots", f'{name} Spectrum of the {i+1}th Frame')
+    plt.savefig(file_path)
+    
     plt.show() 
 
 def plot_mel_cepstrum(mfcc, i):
@@ -149,7 +151,6 @@ def plot_merge():
     plt.axis('off')
     plt.show()
 
-    
 def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25], n_fft=512):
     """Plots a spectrogram from the MFCCs.
 
@@ -173,7 +174,9 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
         plt.ylabel('Frequency [Hz]')
         plt.xlabel('Time [0.01s]')
         plt.colorbar(format='%+2.0f dB')
-        plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
+
+        file_path = os.path.join(os.pardir, "plots", f"spectrogram_{num_mel_bins}_mel_bins.png")
+        plt.savefig(file_path)
         plt.show()
 
 def plot_mfccs(mfccs, title='MFCC Coefficient'):
@@ -183,7 +186,9 @@ def plot_mfccs(mfccs, title='MFCC Coefficient'):
     plt.ylabel('MFCC Coefficients')
     plt.xlabel('Time(0.01s)')
     plt.colorbar()
-    plt.savefig('MFCC Coefficient')
+
+    file_path = os.path.join(os.pardir, "plots", title)
+    plt.savefig(file_path)
     plt.tight_layout()
     plt.show()
 
@@ -211,10 +216,12 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     plt.title('Cepstrum')
     plt.ylabel('Cepstral Coefficients')
     plt.xlabel('Time(0.01s)')
-    plt.colorbar(label='Amplitude')
-    
     plt.tight_layout()
-    plt.savefig("cepstrum.png")
+    plt.colorbar(label='Amplitude')
+
+    file_path = os.path.join(os.pardir, "plots", "cepstrum.png")
+    
+    plt.savefig(file_path)
     plt.show()
 
 
