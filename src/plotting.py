@@ -24,7 +24,10 @@ def plot_waveform(filename):
         plt.ylabel('Amplitude')
         plt.xlabel('Time (s)')
         plt.xlim(left=time[0], right=time[-1])
-        plt.savefig("waveform.png")
+
+        file_path = os.path.join(os.pardir, "plots", "waveform.png")
+        plt.savefig(file_path)
+
         plt.show()
 
 def plot_segment(frames,i,name):
@@ -39,7 +42,12 @@ def plot_segment(frames,i,name):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"{name}.png")
+
+    # 构建保存图像的文件路径
+    file_path = os.path.join(os.pardir, "plots", f"{name}.png")
+
+    # 保存图像到指定路径
+    plt.savefig(file_path)
     plt.show()
 
 def plot_spectrum(frames,i, name):
@@ -75,13 +83,6 @@ def plot_mel_cepstrum(mfcc, i):
 
     mfcc_frame = mfcc[0, :13]
 
-    plots_folder = "plots"
-    if not os.path.exists(plots_folder):
-        os.mkdir(plots_folder)
-
-    file_name = f"Mel_Cepstrum_{i+1}_Frame.png"
-    file_path = os.path.join(plots_folder, file_name)
-
      # Plotting the Mel Cepstrum coefficients
     plt.figure(figsize=(12, 6))
     plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'yellow')
@@ -95,6 +96,8 @@ def plot_mel_cepstrum(mfcc, i):
         plt.vlines(j, ymin=0, ymax=mfcc_frame[j], color='cyan')
 
     plt.grid(True)
+
+    file_path = os.path.join(os.pardir, "plots", f"Mel_Cepstrum_{i+1}_Frame.png")
     plt.savefig(file_path)
     plt.show()
 
@@ -172,6 +175,7 @@ def plot_spectrogram_from_mfcc(mfccs, sample_rate, num_mel_bins_list=[40, 30, 25
         plt.colorbar(format='%+2.0f dB')
         plt.savefig(f"spectrogram_{num_mel_bins}_mel_bins.png")
         plt.show()
+
 def plot_mfccs(mfccs, title='MFCC Coefficient'):
     plt.figure(figsize=(10, 4))
     plt.imshow(mfccs.T, aspect='auto', origin='lower', cmap='jet')
@@ -182,6 +186,7 @@ def plot_mfccs(mfccs, title='MFCC Coefficient'):
     plt.savefig('MFCC Coefficient')
     plt.tight_layout()
     plt.show()
+
 def plot_cepstrum(cepstra, sample_rate, num_ceps):
     """
     Plot the cepstrum of an audio signal.
