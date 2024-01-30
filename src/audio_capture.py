@@ -1,8 +1,9 @@
 import pyaudio
 import wave
 import struct
-from src.config import *
-from src.audio_utils import *
+from config import *
+from audio_utils import *
+import sys
 
 # Initialize PyAudio and start the stream
 def start_audio_stream():

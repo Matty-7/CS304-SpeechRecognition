@@ -3,6 +3,7 @@ import numpy as np
 import wave
 from scipy.fftpack import *
 from PIL import Image
+import os
 
 def plot_waveform(filename):
     
@@ -74,6 +75,13 @@ def plot_mel_cepstrum(mfcc, i):
 
     mfcc_frame = mfcc[0, :13]
 
+    plots_folder = "plots"
+    if not os.path.exists(plots_folder):
+        os.mkdir(plots_folder)
+
+    file_name = f"Mel_Cepstrum_{i+1}_Frame.png"
+    file_path = os.path.join(plots_folder, file_name)
+
      # Plotting the Mel Cepstrum coefficients
     plt.figure(figsize=(12, 6))
     plt.scatter(range(13), mfcc_frame, alpha=0.5, color = 'yellow')
@@ -87,7 +95,7 @@ def plot_mel_cepstrum(mfcc, i):
         plt.vlines(j, ymin=0, ymax=mfcc_frame[j], color='cyan')
 
     plt.grid(True)
-    plt.savefig(f"Mel Cepstrum of the {i+1}th Frame")
+    plt.savefig(file_path)
     plt.show()
 
 def plot_merge():

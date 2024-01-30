@@ -1,7 +1,7 @@
-from src.config import *
-from src.audio_capture import *
-from src.plotting import *
-from src.audio_utils import *
+from config import *
+from audio_capture import *
+from plotting import *
+from audio_utils import *
 
 def main():
     audio, stream = start_audio_stream()
@@ -27,7 +27,7 @@ def main():
 
     plot_waveform(filename)
 
-    plot_merge()
+    # plot_merge()
     plot_mfccs(mfccs)
     plot_spectrogram_from_mfcc(mfccs, RATE, num_mel_bins_list=[40, 30, 25])
     plot_cepstrum(mfccs, RATE, num_ceps=13)

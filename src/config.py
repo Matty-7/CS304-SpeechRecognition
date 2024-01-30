@@ -1,5 +1,4 @@
 import pyaudio
-import sys
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
