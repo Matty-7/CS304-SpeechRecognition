@@ -2,8 +2,8 @@ import math
 import scipy.fftpack
 import numpy as np
 import wave
-from plotting import *
-from config import *
+from src.plotting import *
+from src.config import *
 
 def get_info(filename):
     # Open the audio file with wave module

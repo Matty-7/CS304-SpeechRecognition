@@ -1,7 +1,7 @@
-from config import *
-from audio_capture import *
-from plotting import *
-from audio_utils import *
+from src.config import *
+from src.audio_capture import *
+from src.plotting import *
+from src.audio_utils import *
 
 def main():
     audio, stream = start_audio_stream()
