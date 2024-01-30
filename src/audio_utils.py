@@ -220,7 +220,8 @@ def dtw(features1, features2):
 
 def compute_template_features():
     template_features = {}
-    recordings_folder = 'recordings'
+    # 设置 recordings 文件夹相对于当前文件的路径
+    recordings_folder = os.path.join(os.pardir, 'recordings')  
     for digit in range(10):
         filename = f"{digit}-1.wav"
         file_path = os.path.join(recordings_folder, filename)
@@ -250,3 +251,4 @@ def get_wav_info(wav_file):
         signal = np.frombuffer(buffer, dtype=np.int16)
         
     return sample_rate, signal
+
