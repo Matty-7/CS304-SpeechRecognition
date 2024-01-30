@@ -105,10 +105,8 @@ def record_digit(digit, attempts=10):
             
             input(f"Please speak number {digit} and press Enter to start recording, {attempt}th attempts")
 
-            
-            frames = capture_audio(stream)
+            frames, mfccs = capture_audio(stream)
 
-            
             #filename = os.path.join(recordings_dir, f"{digit}-{attempt}.wav")
             filename = os.path.join(f"{digit}-{attempt}.wav")
             
