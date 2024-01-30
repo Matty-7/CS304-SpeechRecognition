@@ -3,6 +3,7 @@ import wave
 import struct
 from config import *
 from audio_utils import *
+from plotting import *
 import sys
 import os
 
@@ -88,4 +89,36 @@ def save_audio(frames, filename):
     wave_file.setframerate(RATE)
     wave_file.writeframes(b''.join(frames))
     wave_file.close()
+
+def record_digit(digit, attempts=10):
+    
+    recordings_dir = 'recordings'
+    if not os.path.exists(recordings_dir):
+        os.makedirs(recordings_dir)
+
+    audio, stream = start_audio_stream()
+    
+    try:
+        
+        for attempt in range(1, attempts + 1):
+            
+            input(f"Please speak number {digit} and press Enter to start recording, {attempt}th attempts")
+
+            
+            frames = capture_audio(stream)
+
+            
+            filename = os.path.join(recordings_dir, f"{digit}-{attempt}.wav")
+
+            
+            save_audio(frames, filename)
+            print(f"Recording saved to {filename}")
+
+    finally:
+        
+        stream.stop_stream()
+        stream.close()
+        audio.terminate()
+        print(f"All recordings for number {digit} have been saved.")
+
 
