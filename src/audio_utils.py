@@ -5,6 +5,7 @@ import wave
 from plotting import *
 from config import *
 import os
+from python_speech_features import mfcc as mfcc_python_speech_features
 
 def get_info(filename):
 
@@ -147,36 +148,39 @@ def mel_filter_banks(sample_rate,pow_frames):
     
 def mfcc(sample_rate,signal):
     # DCT
-    filter_banks=mel_filter_banks(sample_rate,power_spectrum(preprocessing(signal,sample_rate)))
+    # filter_banks=mel_filter_banks(sample_rate,power_spectrum(preprocessing(signal,sample_rate)))
 
     #mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:14]
-    mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')
+    # mfcc = scipy.fftpack.dct(filter_banks, type=2, axis=1, norm='ortho')
+    mfcc = mfcc_python_speech_features(signal, nfilt=40)
 
     # Mean normalization
     # mfcc -= (np.mean(mfcc, axis=0) + 1e-8)
-    normalized_mfccs = normalize_features(mfcc)
+    # normalized_mfccs = normalize_features(mfcc)
 
-    plot_mel_cepstrum(normalized_mfccs, 0)
+    plot_mel_cepstrum(mfcc, 0)
 
-    return normalized_mfccs
+    return mfcc
 
 def calculate_delta(mfccs):
 
-    delta_mfccs = np.diff(mfccs, axis=0)
-    delta_mfccs = np.concatenate([np.zeros((1, mfccs.shape[1])), delta_mfccs])
-    normalized_delta_mfccs = normalize_features(delta_mfccs)
+    delta_mfccs = np.diff(mfccs, axis=-1)
+    # delta_mfccs = np.concatenate([np.zeros((1, mfccs.shape[1])), delta_mfccs])
+    delta_mfccs = np.concatenate([np.zeros((mfccs.shape[0], 1)), delta_mfccs], axis=-1)
+    # normalized_delta_mfccs = normalize_features(delta_mfccs)
 
-    return normalized_delta_mfccs
+    return delta_mfccs
 
 def calculate_delta_delta(delta_mfccs):
     # Compute delta-delta MFCC
-    delta_delta_mfccs = np.diff(delta_mfccs, axis=0)
-    delta_delta_mfccs = np.concatenate([np.zeros((1, delta_mfccs.shape[1])), delta_delta_mfccs])
-
+    delta_delta_mfccs = np.diff(delta_mfccs, axis=-1)
+    # delta_delta_mfccs = np.concatenate([np.zeros((1, delta_mfccs.shape[1])), delta_delta_mfccs])
+    delta_delta_mfccs = np.concatenate([np.zeros((delta_mfccs.shape[0], 1)), delta_delta_mfccs], axis=-1)
+    
     # Normalize delta-delta MFCC
-    normalized_delta_delta_mfccs = normalize_features(delta_delta_mfccs)
+    # normalized_delta_delta_mfccs = normalize_features(delta_delta_mfccs)
 
-    return normalized_delta_delta_mfccs
+    return delta_delta_mfccs
 
 def normalize_features(features):
     
@@ -191,8 +195,9 @@ def integrate_mfccs(sample_rate, signal):
 
     # Combine MFCC, delta MFCC, and delta-delta MFCC
     combined_features = np.concatenate((mfccs, delta_mfccs, delta_delta_mfccs), axis=1)
+    normalized_combined_features = normalize_features(combined_features)
 
-    return combined_features
+    return normalized_combined_features
 
 # ---------------------------------------------------- # 
 
@@ -427,20 +432,4 @@ def perform_time_sync_dtw_recognition_with_pruning(templates, tests, window_size
 
 # ---------------------------------------------------- # 
 
-def compute_all_template_features():
-    all_template_features = {}
-    recordings_folder = os.path.join(os.pardir, 'recordings')  
-    for digit in range(10):
-        for attempt in range(1, 6):  # 对于每个数字的5个模板音频
-            filename = f"{digit}-{attempt}.wav"
-            file_path = os.path.join(recordings_folder, filename)
 
-            if not os.path.isfile(file_path):
-                print(f"File {file_path} does not exist. Skipping.")
-                continue
-
-            sample_rate, signal = get_wav_info(file_path)
-            features = integrate_mfccs(sample_rate, signal)
-            all_template_features[f"{digit}-{attempt}"] = features
-
-    return all_template_features
