@@ -391,3 +391,4 @@ def perform_dtw_recognition_with_pruning(templates, tests, window_size, prune_th
 
 # ---------------------------------------------------- # 
 
+
