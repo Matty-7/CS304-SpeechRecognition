@@ -358,33 +358,34 @@ def perform_time_sync_dtw_recognition(templates, tests, window_size):
     return recognition_results
 # ---------------------------------------------------- # 
 
-def dtw_with_pruning(template, test, window_size, prune_threshold):
-    n = len(template)
-    m = len(test)
+def dtw_with_pruning(template, test, window_size, beam_width):
+    n, m = len(template), len(test)
     cost = np.full((n + 1, m + 1), np.inf)
     cost[0, 0] = 0
 
     for i in range(1, n + 1):
+        min_cost_in_col = np.inf
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
-            if cost[i - 1, j - 1] < prune_threshold:
-                dist = np.linalg.norm(template[i - 1] - test[j - 1])
-                cost[i, j] = dist + min(cost[i , j-1],    # insertion
-                                        cost[i-1, j - 1],    # deletion
-                                        cost[i - 2, j - 1]) # match
+            dist = np.linalg.norm(template[i - 1] - test[j - 1])
+            cost[i, j] = dist + min(cost[i-1, j], cost[i, j-1], cost[i-1, j-1])
+            min_cost_in_col = min(min_cost_in_col, cost[i, j])
+        
+        # Apply beam search pruning
+        beam_limit = min_cost_in_col + beam_width
+        for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
+            if cost[i, j] > beam_limit:
+                cost[i, j] = np.inf
 
-    # 如果最终值是无穷大，说明所有路径都被剪枝了
     return cost[n, m] if cost[n, m] != np.inf else None
 
-def perform_dtw_recognition_with_pruning(templates, tests, window_size, prune_threshold):
+def perform_dtw_recognition_with_pruning(templates, tests, window_size, beam_width):
     recognition_results = {}
-
     for test_name, test_feature in tests.items():
         best_match = None
         lowest_distance = float('inf')
 
         for template_name, template_feature in templates.items():
-            distance = dtw_with_pruning(template_feature, test_feature, window_size, prune_threshold)
-
+            distance = dtw_with_pruning(template_feature, test_feature, window_size, beam_width)
             if distance is not None and distance < lowest_distance:
                 lowest_distance = distance
                 best_match = template_name
@@ -393,34 +394,43 @@ def perform_dtw_recognition_with_pruning(templates, tests, window_size, prune_th
 
     return recognition_results
 
+
 # ---------------------------------------------------- # 
 
-def time_sync_dtw_with_pruning(template, test, window_size, prune_threshold):
+import numpy as np
+
+def time_sync_dtw_with_pruning(template, test, window_size, beam_width_factor):
     n = len(template)
     m = len(test)
     cost = np.full((n + 1, m + 1), np.inf)
     cost[0, 0] = 0
 
     for i in range(1, n + 1):
+        min_cost_in_row = np.inf
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
-            if cost[i - 1, j - 1] < prune_threshold:
-                dist = np.linalg.norm(template[i - 1] - test[j - 1])
-                cost[i, j] = dist + min(cost[i , j-1],    # insertion
-                                        cost[i-1, j - 1],    # deletion
-                                        cost[i - 2, j - 1]) # match
+            dist = np.linalg.norm(template[i - 1] - test[j - 1])
+            cost[i, j] = dist + min(cost[i, j-1],    # insertion
+                                    cost[i-1, j],    # deletion
+                                    cost[i-1, j-1])  # match
+            min_cost_in_row = min(min_cost_in_row, cost[i, j])
+
+        # Apply beam search pruning
+        beam_threshold = min_cost_in_row * beam_width_factor
+        for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
+            if cost[i, j] > beam_threshold:
+                cost[i, j] = np.inf
 
     return cost[n, m] if cost[n, m] != np.inf else None
 
-def perform_time_sync_dtw_recognition_with_pruning(templates, tests, window_size, prune_threshold):
-    recognition_results = {}
 
+def perform_time_sync_dtw_recognition_with_pruning(templates, tests, window_size, beam_width_factor):
+    recognition_results = {}
     for test_name, test_feature in tests.items():
         best_match = None
         lowest_distance = float('inf')
 
         for template_name, template_feature in templates.items():
-            distance = time_sync_dtw_with_pruning(template_feature, test_feature, window_size, prune_threshold)
-
+            distance = time_sync_dtw_with_pruning(template_feature, test_feature, window_size, beam_width_factor)
             if distance is not None and distance < lowest_distance:
                 lowest_distance = distance
                 best_match = template_name
@@ -428,7 +438,3 @@ def perform_time_sync_dtw_recognition_with_pruning(templates, tests, window_size
         recognition_results[test_name] = best_match
 
     return recognition_results
-
-# ---------------------------------------------------- # 
-
-
