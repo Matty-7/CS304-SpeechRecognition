@@ -1,62 +1,76 @@
-# hmm_model.py
+# hmm_models.py
+
 import numpy as np
 
 class HMM:
-    def __init__(self, num_states, feature_dim=39):
+    def __init__(self, num_states, feature_dim):
         self.num_states = num_states
-        self.feature_dim = feature_dim  # 将 feature_dim 设置为类的属性
-        self.A = np.zeros((num_states, num_states))
-        self.pi = np.zeros(num_states)
-        self.means = np.zeros((num_states, feature_dim))
-        self.covars = np.zeros((num_states, feature_dim, feature_dim))
-        self.initialize_parameters()
+        self.feature_dim = feature_dim
 
-    def initialize_parameters(self):
-        # 初始化 A 和 pi
+        # 初始化转移概率矩阵和初始状态概率
         self.A = np.random.dirichlet(np.ones(self.num_states), self.num_states)
         self.pi = np.random.dirichlet(np.ones(self.num_states))
+
         # 初始化均值和协方差矩阵
         self.means = np.random.randn(self.num_states, self.feature_dim)
+        self.covars = np.array([np.eye(self.feature_dim) for _ in range(self.num_states)])
+
+        # 转换为对数概率
+        self.log_A = np.log(self.A + 1e-6)
+        self.log_pi = np.log(self.pi + 1e-6)
+
+    def initialize_parameters(self):
+        self.A = np.random.dirichlet(np.ones(self.num_states), self.num_states)
+        self.pi = np.random.dirichlet(np.ones(self.num_states))
+        self.means = np.random.randn(self.num_states, self.feature_dim)
         for i in range(self.num_states):
-            self.covars[i] = np.eye(self.feature_dim)
+            self.covars[i] = np.eye(self.feature_dim) * 1.01
 
-    def update_transition_matrix(self, state_transitions):
-        # state_transitions 是一个矩阵，表示状态i转移到状态j的次数
-        total_transitions = state_transitions.sum(axis=1)
-        self.A = state_transitions / total_transitions[:, None]
 
-    def update_emission_matrix(self, observations, state_assignments):
-        # 这里我们简化处理，假设每个状态的观测值是离散的
-        # 对于连续值或更复杂的情况，需要使用不同的方法
-        for i in range(self.num_states):
-            state_obs = observations[state_assignments == i]
-            if len(state_obs) > 0:
-                self.B[i, :] = np.bincount(state_obs, minlength=self.num_observations) / len(state_obs)
+    def update_transition_matrix(self, state_transitions_counts):
+        # 使用对数空间更新转移概率矩阵
+        total_transitions = state_transitions_counts.sum(axis=1) + 1e-6  # 避免除以零
+        self.log_A = np.log(state_transitions_counts + 1e-6) - np.log(total_transitions[:, None])
 
-    def update_initial_state_distribution(self, initial_state_counts):
-        total_counts = initial_state_counts.sum()
-        self.pi = initial_state_counts / total_counts
+    def gaussian_probability(self, observation, state):
+        mean = self.means[state]
+        covar = self.covars[state]
+        covar_det = np.linalg.det(covar)
+        covar_inv = np.linalg.inv(covar)
+        norm_const = 1.0 / (np.power((2 * np.pi), self.feature_dim / 2) * np.sqrt(covar_det))
+        prob = np.exp(-0.5 * np.dot(np.dot((observation - mean).T, covar_inv), (observation - mean)))
+        return norm_const * prob
 
-    # Viterbi 算法来确定状态序列，以及计算观测序列概率等
-    def viterbi(hmm, observations):
-        num_states = hmm.num_states
+    def viterbi(self, observations):
+        num_states = self.num_states
         len_observations = len(observations)
 
-        # dp_matrix 存储每个状态的最大概率
-        dp_matrix = np.zeros((num_states, len_observations))
-
-        # path_matrix 用于回溯最优路径
+        # 动态规划矩阵
+        dp_matrix = np.full((num_states, len_observations), float('-inf'))
         path_matrix = np.zeros((num_states, len_observations), dtype=int)
 
         # 初始化
-        dp_matrix[:, 0] = hmm.pi * hmm.B[:, observations[0]]
+        for s in range(num_states):
+            prob = self.gaussian_probability(observations[0], s)
+            if prob <= 0:  # 防止概率为零或非常小
+                prob = 1e-10
+            dp_matrix[s, 0] = self.log_pi[s] + np.log(prob)
 
         # 递推
         for t in range(1, len_observations):
             for s in range(num_states):
-                prob = dp_matrix[:, t - 1] * hmm.A[:, s] * hmm.B[s, observations[t]]
-                dp_matrix[s, t] = np.max(prob)
-                path_matrix[s, t] = np.argmax(prob)
+                max_log_prob = float('-inf')
+                best_prev_state = 0
+                for prev_state in range(num_states):
+                    log_prob = dp_matrix[prev_state, t - 1] + self.log_A[prev_state, s]
+                    if log_prob > max_log_prob:
+                        max_log_prob = log_prob
+                        best_prev_state = prev_state
+                prob = self.gaussian_probability(observations[t], s)
+                if prob <= 0:  # 同样防止概率为零或非常小
+                    prob = 1e-10
+                dp_matrix[s, t] = max_log_prob + np.log(prob)
+                path_matrix[s, t] = best_prev_state
 
         # 回溯
         states = np.zeros(len_observations, dtype=int)
@@ -65,5 +79,3 @@ class HMM:
             states[t] = path_matrix[states[t + 1], t + 1]
 
         return states
-
-# 如何从观测数据中提取状态转移和状态分配的函数，以及如何计算模型的前向和后向概率等
