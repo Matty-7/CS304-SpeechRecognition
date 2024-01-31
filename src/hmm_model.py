@@ -79,3 +79,29 @@ class HMM:
             states[t] = path_matrix[states[t + 1], t + 1]
 
         return states
+    
+    def calculate_score(self, observations):
+        num_states = self.num_states
+        len_observations = len(observations)
+
+        # 前向概率矩阵
+        forward_probs = np.zeros((num_states, len_observations))
+
+        # 初始化
+        for s in range(num_states):
+            prob = self.gaussian_probability(observations[0], s)
+            if prob <= 0:
+                prob = 1e-10
+            forward_probs[s, 0] = self.pi[s] * prob
+
+        # 递推
+        for t in range(1, len_observations):
+            for s in range(num_states):
+                prob = self.gaussian_probability(observations[t], s)
+                if prob <= 0:
+                    prob = 1e-10
+                forward_probs[s, t] = np.sum(forward_probs[:, t - 1] * self.A[:, s]) * prob
+
+        # 计算最终得分
+        score = np.sum(forward_probs[:, -1])
+        return score
