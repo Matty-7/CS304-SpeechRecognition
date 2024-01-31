@@ -27,7 +27,7 @@ def save_features(features, directory):
         os.makedirs(directory, exist_ok=True)
 
     for name, feature in features.items():
-        feature_path = os.path.join(directory, f"{name}_features.npy")
+        feature_path = os.path.join(directory, f"{name}.npy")
         np.save(feature_path, feature)
         print(f"Saved features to {feature_path}")
 

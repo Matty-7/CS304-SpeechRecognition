@@ -13,7 +13,7 @@ def hmm_load_features(data_dir):
     for file_name in os.listdir(data_dir):
         if file_name.endswith('.npy'):
             # 解析文件名，获取标签信息
-            parts = file_name.split('_')
+            parts = file_name.split('-')
             if len(parts) == 3 and parts[2].endswith('.npy'):
                 label = int(parts[0])
                 
@@ -25,6 +25,7 @@ def hmm_load_features(data_dir):
                 samples.append(sample)
 
     return samples
+
 
 def main():
 

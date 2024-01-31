@@ -14,7 +14,7 @@ def main():
     # 处理并保存测试特征
     for test_name, features in tests.items():
         # 定义要保存的文件名
-        features_filename = f"{test_name}_features.npy"
+        features_filename = f"{test_name}.npy"
         # 定义完整的文件路径
         features_path = os.path.join(tests_dir, features_filename)
         
