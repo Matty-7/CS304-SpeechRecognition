@@ -424,3 +424,23 @@ def perform_time_sync_dtw_recognition_with_pruning(templates, tests, window_size
         recognition_results[test_name] = best_match
 
     return recognition_results
+
+# ---------------------------------------------------- # 
+
+def compute_all_template_features():
+    all_template_features = {}
+    recordings_folder = os.path.join(os.pardir, 'recordings')  
+    for digit in range(10):
+        for attempt in range(1, 6):  # 对于每个数字的5个模板音频
+            filename = f"{digit}-{attempt}.wav"
+            file_path = os.path.join(recordings_folder, filename)
+
+            if not os.path.isfile(file_path):
+                print(f"File {file_path} does not exist. Skipping.")
+                continue
+
+            sample_rate, signal = get_wav_info(file_path)
+            features = integrate_mfccs(sample_rate, signal)
+            all_template_features[f"{digit}-{attempt}"] = features
+
+    return all_template_features
