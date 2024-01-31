@@ -220,9 +220,9 @@ def dtw(features1, features2):
         for j in range(1, m+1):
             cost = np.linalg.norm(features1[i-1] - features2[j-1])
             # 取最小的DTW路径
-            dtw_matrix[i, j] = cost + min(dtw_matrix[i-1, j],    # 插入
-                                          dtw_matrix[i, j-1],    # 删除
-                                          dtw_matrix[i-1, j-1])  # 替换
+            dtw_matrix[i, j] = cost + min(dtw_matrix[i, j-1],    
+                                          dtw_matrix[i-1, j-1],   
+                                          dtw_matrix[i-2, j-1])  
     return dtw_matrix[n, m]
 
 def perform_dtw_recognition(templates, tests):
@@ -334,9 +334,9 @@ def time_sync_dtw(template, test, window_size):
     for i in range(1, n + 1):
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
             dist = np.linalg.norm(template[i - 1] - test[j - 1])
-            cost[i, j] = dist + min(cost[i - 1, j],    # insertion
-                                    cost[i, j - 1],    # deletion
-                                    cost[i - 1, j - 1]) # match
+            cost[i, j] = dist + min(cost[i , j-1],    # insertion
+                                        cost[i-1, j - 1],    # deletion
+                                        cost[i - 2, j - 1]) # match
 
     return cost[n, m]
 
@@ -369,9 +369,9 @@ def dtw_with_pruning(template, test, window_size, prune_threshold):
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
             if cost[i - 1, j - 1] < prune_threshold:
                 dist = np.linalg.norm(template[i - 1] - test[j - 1])
-                cost[i, j] = dist + min(cost[i - 1, j],    # insertion
-                                        cost[i, j - 1],    # deletion
-                                        cost[i - 1, j - 1]) # match
+                cost[i, j] = dist + min(cost[i , j-1],    # insertion
+                                        cost[i-1, j - 1],    # deletion
+                                        cost[i - 2, j - 1]) # match
 
     # 如果最终值是无穷大，说明所有路径都被剪枝了
     return cost[n, m] if cost[n, m] != np.inf else None
@@ -406,9 +406,9 @@ def time_sync_dtw_with_pruning(template, test, window_size, prune_threshold):
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
             if cost[i - 1, j - 1] < prune_threshold:
                 dist = np.linalg.norm(template[i - 1] - test[j - 1])
-                cost[i, j] = dist + min(cost[i - 1, j],    # insertion
-                                        cost[i, j - 1],    # deletion
-                                        cost[i - 1, j - 1]) # match
+                cost[i, j] = dist + min(cost[i , j-1],    # insertion
+                                        cost[i-1, j - 1],    # deletion
+                                        cost[i - 2, j - 1]) # match
 
     return cost[n, m] if cost[n, m] != np.inf else None
 
