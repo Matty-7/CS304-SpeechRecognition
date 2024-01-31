@@ -88,7 +88,6 @@ def zero_padding(signal, target_length):
     padded_signal = np.append(signal, z)
     return padded_signal
 
-
 def preprocessing(signal, sample_rate):
 
     # Framing
