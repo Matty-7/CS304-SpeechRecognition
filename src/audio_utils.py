@@ -313,3 +313,36 @@ def perform_dtw_recognition(templates, tests):
         recognition_results[test_name] = best_match
 
     return recognition_results
+
+def time_sync_dtw(template, test, window_size):
+    n = len(template)
+    m = len(test)
+    cost = np.full((n + 1, m + 1), np.inf)
+    cost[0, 0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
+            dist = np.linalg.norm(template[i - 1] - test[j - 1])
+            cost[i, j] = dist + min(cost[i - 1, j],    # insertion
+                                    cost[i, j - 1],    # deletion
+                                    cost[i - 1, j - 1]) # match
+
+    return cost[n, m]
+
+def perform_time_sync_dtw_recognition(templates, tests, window_size):
+    recognition_results = {}
+
+    for test_name, test_feature in tests.items():
+        best_match = None
+        lowest_distance = float('inf')
+
+        for template_name, template_feature in templates.items():
+            distance = time_sync_dtw(template_feature, test_feature, window_size)
+
+            if distance < lowest_distance:
+                lowest_distance = distance
+                best_match = template_name
+
+        recognition_results[test_name] = best_match
+
+    return recognition_results

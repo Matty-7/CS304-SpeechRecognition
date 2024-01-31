@@ -33,5 +33,17 @@ def main():
     accuracy = calculate_accuracy(recognition_results)
     print(f"Recognition accuracy: {accuracy:.2f}")
 
+    # 执行时间同步DTW识别
+    window_size = 10  # 窗口大小可能需要根据你的序列长度调整
+    time_sync_results = perform_time_sync_dtw_recognition(templates, tests, window_size)
+
+    # 打印时间同步DTW的识别结果
+    for test_name, matched_template in time_sync_results.items():
+        print(f"Time-sync test {test_name} is recognized as {matched_template}")
+
+    # 计算并打印时间同步DTW的识别正确率
+    time_sync_accuracy = calculate_accuracy(time_sync_results)
+    print(f"Time-sync DTW recognition accuracy: {time_sync_accuracy:.2f}")
+
 if __name__ == "__main__":
     main()
