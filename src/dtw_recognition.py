@@ -45,5 +45,17 @@ def main():
     time_sync_accuracy = calculate_accuracy(time_sync_results)
     print(f"Time-sync DTW recognition accuracy: {time_sync_accuracy:.2f}")
 
+    # 确定窗口大小和剪枝阈值
+    window_size = 10  # 窗口大小可能需要根据你的序列长度调整
+    prune_thresholds = [np.inf, 100, 50, 25, 10, 5]  # 示例阈值列表，可能需要根据数据调整
+    
+    # 对每个剪枝阈值执行DTW识别并计算准确率
+    for prune_threshold in prune_thresholds:
+        pruned_results = perform_dtw_recognition_with_pruning(templates, tests, window_size, prune_threshold)
+        
+        # 计算并打印剪枝DTW的识别正确率
+        pruned_accuracy = calculate_accuracy(pruned_results)
+        print(f"Pruning threshold: {prune_threshold}, Accuracy: {pruned_accuracy:.2f}")
+
 if __name__ == "__main__":
     main()

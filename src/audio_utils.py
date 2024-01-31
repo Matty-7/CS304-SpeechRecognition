@@ -193,7 +193,9 @@ def integrate_mfccs(sample_rate, signal):
     combined_features = np.concatenate((mfccs, delta_mfccs, delta_delta_mfccs), axis=1)
 
     return combined_features
-    
+
+# ---------------------------------------------------- # 
+
 def dtw(features1, features2):
 
     n = len(features1)
@@ -217,6 +219,30 @@ def dtw(features1, features2):
                                           dtw_matrix[i, j-1],    # 删除
                                           dtw_matrix[i-1, j-1])  # 替换
     return dtw_matrix[n, m]
+
+def perform_dtw_recognition(templates, tests):
+    """
+    Perform DTW recognition by comparing each test feature vector
+    to each template feature vector.
+    """
+    recognition_results = {}
+
+    for test_name, test_feature in tests.items():
+        best_match = None
+        lowest_distance = float('inf')
+
+        for template_name, template_feature in templates.items():
+            distance = dtw(template_feature, test_feature)
+
+            if distance < lowest_distance:
+                lowest_distance = distance
+                best_match = template_name
+
+        recognition_results[test_name] = best_match
+
+    return recognition_results
+
+# ---------------------------------------------------- # 
 
 def compute_template_features():
     template_features = {}
@@ -266,6 +292,7 @@ def compute_test_features():
 
     return test_features
 
+# ---------------------------------------------------- # 
 
 def get_wav_info(wav_file):
     with wave.open(wav_file, 'rb') as wf:
@@ -291,28 +318,7 @@ def load_features(directory):
             feature_path = os.path.join(directory, filename)
             features[name] = np.load(feature_path)
     return features
-
-def perform_dtw_recognition(templates, tests):
-    """
-    Perform DTW recognition by comparing each test feature vector
-    to each template feature vector.
-    """
-    recognition_results = {}
-
-    for test_name, test_feature in tests.items():
-        best_match = None
-        lowest_distance = float('inf')
-
-        for template_name, template_feature in templates.items():
-            distance = dtw(template_feature, test_feature)
-
-            if distance < lowest_distance:
-                lowest_distance = distance
-                best_match = template_name
-
-        recognition_results[test_name] = best_match
-
-    return recognition_results
+# ---------------------------------------------------- # 
 
 def time_sync_dtw(template, test, window_size):
     n = len(template)
@@ -346,3 +352,42 @@ def perform_time_sync_dtw_recognition(templates, tests, window_size):
         recognition_results[test_name] = best_match
 
     return recognition_results
+# ---------------------------------------------------- # 
+
+def dtw_with_pruning(template, test, window_size, prune_threshold):
+    n = len(template)
+    m = len(test)
+    cost = np.full((n + 1, m + 1), np.inf)
+    cost[0, 0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
+            if cost[i - 1, j - 1] < prune_threshold:
+                dist = np.linalg.norm(template[i - 1] - test[j - 1])
+                cost[i, j] = dist + min(cost[i - 1, j],    # insertion
+                                        cost[i, j - 1],    # deletion
+                                        cost[i - 1, j - 1]) # match
+
+    # 如果最终值是无穷大，说明所有路径都被剪枝了
+    return cost[n, m] if cost[n, m] != np.inf else None
+
+def perform_dtw_recognition_with_pruning(templates, tests, window_size, prune_threshold):
+    recognition_results = {}
+
+    for test_name, test_feature in tests.items():
+        best_match = None
+        lowest_distance = float('inf')
+
+        for template_name, template_feature in templates.items():
+            distance = dtw_with_pruning(template_feature, test_feature, window_size, prune_threshold)
+
+            if distance is not None and distance < lowest_distance:
+                lowest_distance = distance
+                best_match = template_name
+
+        recognition_results[test_name] = best_match
+
+    return recognition_results
+
+# ---------------------------------------------------- # 
+
