@@ -3,6 +3,30 @@ from audio_capture import *
 from plotting import *
 from audio_utils import *
 
+def compute_test_features():
+    test_features = {}
+    recordings_folder = os.path.join(os.pardir, 'recordings')  
+    for digit in range(10):
+        for attempt in range(6, 11):  # 对于每个数字的5个测试文件
+            filename = f"{digit}-{attempt}.wav"
+            file_path = os.path.join(recordings_folder, filename)
+
+            # 确保文件存在
+            if not os.path.isfile(file_path):
+                print(f"File {file_path} does not exist. Skipping.")
+                continue
+
+            # 加载音频文件
+            sample_rate, signal = get_wav_info(file_path)
+            
+            # 计算特征向量序列
+            features = integrate_mfccs(sample_rate, signal)
+            
+            # 保存特征向量序列
+            test_features[f"{digit}-{attempt}"] = features
+
+    return test_features
+
 def main():
     # 获取测试特征
     tests = compute_test_features()
