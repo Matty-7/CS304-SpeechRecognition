@@ -34,9 +34,6 @@ def main():
     accuracies = []
     
     
-    
-    
-    
 
     # 确保在调用绘图函数前accuracies列表已经填充
     

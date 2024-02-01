@@ -3,7 +3,7 @@
 import numpy as np
 
 def train_hmm(hmm, training_data, num_iterations=10, smoothing_constant=1e-6):
-    # 初始化初始状态计数为零
+    
     initial_state_counts = np.zeros(hmm.num_states)
 
     for _ in range(num_iterations):
@@ -11,8 +11,8 @@ def train_hmm(hmm, training_data, num_iterations=10, smoothing_constant=1e-6):
         state_transitions_counts = np.zeros((hmm.num_states, hmm.num_states))
 
         for sample in training_data:
-            features = sample['features']  # 特征数据
-            states = hmm.viterbi(features)  # Viterbi 算法
+            features = sample['features']
+            states = hmm.viterbi(features)
 
             # 累加状态转移次数
             for t in range(1, len(states)):

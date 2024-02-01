@@ -6,7 +6,7 @@ from audio_utils import *
 def compute_all_template_features():
     
     all_template_features = {}
-    recordings_folder = os.path.join(os.pardir, 'recordings')  
+    recordings_folder = os.path.join(os.pardir, 'recordings')
     for digit in range(10):
         for attempt in range(1, 6):  # 对于每个数字的5个模板音频
             filename = f"{digit}-{attempt}.wav"

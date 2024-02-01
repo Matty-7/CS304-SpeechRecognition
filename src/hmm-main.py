@@ -1,15 +1,14 @@
 import numpy as np
 from hmmlearn import hmm
 
-# 假设n_components是HMM的状态数
 n_components = 5
 
-# 初始化模型存储字典
+
 models = {}
 
-for digit in range(10):  # 对于每个数字
+for digit in range(10):  
     model = hmm.GaussianHMM(n_components=n_components, covariance_type="diag")
-    X = np.empty((0, 39))  # 假设特征向量的维度是39
+    X = np.empty((0, 39))  
     lengths = []  # 存储每个序列的长度
     for i in range(1, 6):  # 读取每个数字的5个训练样本
         features = np.load(f"../features/all_templates/{digit}-{i}.npy")
@@ -29,7 +28,7 @@ for digit in range(10):  # 对于每个数字的测试数据
         if pred_digit == digit:
             accuracy += 1
 
-# 计算准确率
+
 total_tests = 50  # 总测试样本数
 accuracy = accuracy / total_tests
 print(f"Recognition Accuracy: {accuracy * 100}%")

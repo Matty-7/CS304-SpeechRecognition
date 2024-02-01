@@ -28,10 +28,9 @@ def compute_test_features():
     return test_features
 
 def main():
-    # 获取测试特征
+    
     tests = compute_test_features()
     
-    # 创建features/tests目录，如果不存在的话
     tests_dir = os.path.join(os.pardir, 'features', 'tests')
     os.makedirs(tests_dir, exist_ok=True)
 
@@ -42,7 +41,7 @@ def main():
         # 定义完整的文件路径
         features_path = os.path.join(tests_dir, features_filename)
         
-        # 保存特征向量到.npy文件，便于后续加载和使用
+        # 保存特征向量到.npy文件
         np.save(features_path, features)
         print(f"Test features for {test_name} saved to {features_path}")
 

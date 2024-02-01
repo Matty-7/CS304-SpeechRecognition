@@ -36,27 +36,24 @@ def calculate_accuracy(recognition_results):
     return correct_matches / total_tests
 
 def main():
-    # 加载模板特征
+    
     templates_dir = os.path.join(os.pardir, 'features', 'templates')
     templates = load_features(templates_dir)
 
-    # 加载测试特征
     tests_dir = os.path.join(os.pardir, 'features', 'tests')
     tests = load_features(tests_dir)
 
     # 执行DTW识别
     recognition_results = perform_dtw_recognition(templates, tests)
 
-    # 打印识别结果
     for test_name, matched_template in recognition_results.items():
         print(f"Test {test_name} is recognized as {matched_template}")
 
-    # 计算并打印识别正确率
     accuracy = calculate_accuracy(recognition_results)
     print(f"Recognition accuracy: {accuracy:.2f}")
 
     # 执行时间同步DTW识别
-    window_size = 10  # 窗口大小可能需要根据你的序列长度调整
+    window_size = 10  
     time_sync_results = perform_time_sync_dtw_recognition(templates, tests, window_size)
 
     # 打印时间同步DTW的识别结果
@@ -67,9 +64,8 @@ def main():
     time_sync_accuracy = calculate_accuracy(time_sync_results)
     print(f"Time-sync DTW recognition accuracy: {time_sync_accuracy:.2f}")
 
-    # 确定窗口大小和剪枝阈值
-    window_size = 10  # 窗口大小可能需要根据你的序列长度调整
-    prune_thresholds = range(0,150,10) # 示例阈值列表，可能需要根据数据调整
+    window_size = 10  
+    prune_thresholds = range(0,150,10)
     accuracies = []
     
     for prune_threshold in prune_thresholds:
@@ -87,7 +83,7 @@ def main():
         print("No accuracy data available for plotting.")
 
     # 执行时间同步DTW剪枝识别并计算准确率
-    window_size = 20  # 窗口大小
+    window_size = 20  
     prune_thresholds = range(0,100, 10)
     time_sync_accuracies = []
 
