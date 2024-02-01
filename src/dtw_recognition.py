@@ -69,7 +69,7 @@ def main():
 
     # 确定窗口大小和剪枝阈值
     window_size = 10  # 窗口大小可能需要根据你的序列长度调整
-    prune_thresholds = range(1,50,5) # 示例阈值列表，可能需要根据数据调整
+    prune_thresholds = range(0,150,10) # 示例阈值列表，可能需要根据数据调整
     accuracies = []
     
     for prune_threshold in prune_thresholds:
@@ -88,7 +88,7 @@ def main():
 
     # 执行时间同步DTW剪枝识别并计算准确率
     window_size = 20  # 窗口大小
-    prune_thresholds = range(1,50,5)
+    prune_thresholds = range(0,100, 10)
     time_sync_accuracies = []
 
     for prune_threshold in prune_thresholds:
@@ -107,3 +107,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
