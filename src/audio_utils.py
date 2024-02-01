@@ -308,18 +308,27 @@ def perform_time_sync_dtw_recognition(templates, tests, window_size):
     return recognition_results
 # ---------------------------------------------------- # 
 
+import numpy as np
+
 def dtw_with_pruning(template, test, window_size, beam_width):
     n, m = len(template), len(test)
-    cost = np.full((n + 1, m + 1), np.inf)
+    cost = np.full((n + 2, m + 1), np.inf)  # Increase the row dimension to account for right-up-up moves
     cost[0, 0] = 0
+    cost[1, 0] = 0  # Initialize the cost for the first row
 
     for i in range(1, n + 1):
         min_cost_in_col = np.inf
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
             dist = np.linalg.norm(template[i - 1] - test[j - 1])
-            cost[i, j] = dist + min(cost[i-1, j], cost[i, j-1], cost[i-1, j-1])
+
+            # Calculate cost for each allowed move
+            cost_right = cost[i, j - 1] + dist  # Right move
+            cost_right_up = cost[i - 1, j - 1] + dist  # Right-up move
+            cost_right_up_up = cost[i - 2, j - 1] + dist if i > 1 else np.inf  # Right-up-up move
+
+            cost[i, j] = min(cost_right, cost_right_up, cost_right_up_up)
             min_cost_in_col = min(min_cost_in_col, cost[i, j])
-        
+
         # Apply beam search pruning
         beam_limit = min_cost_in_col + beam_width
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
@@ -327,6 +336,7 @@ def dtw_with_pruning(template, test, window_size, beam_width):
                 cost[i, j] = np.inf
 
     return cost[n, m] if cost[n, m] != np.inf else None
+
 
 def perform_dtw_recognition_with_pruning(templates, tests, window_size, beam_width):
     recognition_results = {}
@@ -349,25 +359,30 @@ def perform_dtw_recognition_with_pruning(templates, tests, window_size, beam_wid
 
 import numpy as np
 
-def time_sync_dtw_with_pruning(template, test, window_size, beam_width_factor):
+def time_sync_dtw_with_pruning(template, test, window_size, beam_width):
     n = len(template)
     m = len(test)
-    cost = np.full((n + 1, m + 1), np.inf)
+    cost = np.full((n + 2, m + 1), np.inf)  # Adjusted matrix size for right-up-up move
     cost[0, 0] = 0
+    cost[1, 0] = 0  # Initialize the cost for the first row
 
     for i in range(1, n + 1):
-        min_cost_in_row = np.inf
+        min_cost_in_col = np.inf
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
             dist = np.linalg.norm(template[i - 1] - test[j - 1])
-            cost[i, j] = dist + min(cost[i, j-1],    # insertion
-                                    cost[i-1, j],    # deletion
-                                    cost[i-1, j-1])  # match
-            min_cost_in_row = min(min_cost_in_row, cost[i, j])
+
+            # Calculate cost for each allowed move
+            cost_right = cost[i, j - 1] + dist  # Right move
+            cost_right_up = cost[i - 1, j - 1] + dist  # Right-up move
+            cost_right_up_up = cost[i - 2, j - 1] + dist if i > 1 else np.inf  # Right-up-up move
+
+            cost[i, j] = min(cost_right, cost_right_up, cost_right_up_up)
+            min_cost_in_col = min(min_cost_in_col, cost[i, j])
 
         # Apply beam search pruning
-        beam_threshold = min_cost_in_row * beam_width_factor
+        beam_limit = min_cost_in_col + beam_width
         for j in range(max(1, i - window_size), min(m + 1, i + window_size)):
-            if cost[i, j] > beam_threshold:
+            if cost[i, j] > beam_limit:
                 cost[i, j] = np.inf
 
     return cost[n, m] if cost[n, m] != np.inf else None
