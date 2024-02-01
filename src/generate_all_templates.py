@@ -4,6 +4,7 @@ from plotting import *
 from audio_utils import *
 
 def compute_all_template_features():
+    
     all_template_features = {}
     recordings_folder = os.path.join(os.pardir, 'recordings')  
     for digit in range(10):

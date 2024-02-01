@@ -236,14 +236,18 @@ def plot_cepstrum(cepstra, sample_rate, num_ceps):
     plt.savefig(file_path)
     plt.show()
 
-def plot_pruning_threshold_vs_accuracy(prune_thresholds, accuracies):
+def plot_pruning_threshold_vs_accuracy(prune_thresholds, accuracies, name):
+
+    plt.style.use('dark_background')  # Set the background theme
+
     plt.figure(figsize=(10, 6))
-    plt.plot(prune_thresholds, accuracies, marker='o')
-    
-    plt.title('Pruning Threshold vs Recognition Accuracy')
+    plt.plot(prune_thresholds, accuracies, marker='o', color='cyan')
+
+    plt.title(f'Pruning Threshold vs Recognition Accuracy for {name}')
     plt.xlabel('Pruning Threshold')
     plt.ylabel('Recognition Accuracy')
     plt.grid(True)
+    plt.savefig(os.path.join(os.pardir, "plots", f"Pruning Threshold vs Recognition Accuracy for {name}.png"))
     plt.show()
 
 

@@ -82,13 +82,13 @@ def main():
 
     # 确保在调用绘图函数前accuracies列表已经填充
     if accuracies:
-        plot_pruning_threshold_vs_accuracy(prune_thresholds, accuracies)
+        plot_pruning_threshold_vs_accuracy(prune_thresholds, accuracies, "DTW")
     else:
         print("No accuracy data available for plotting.")
 
     # 执行时间同步DTW剪枝识别并计算准确率
     window_size = 20  # 窗口大小
-    prune_thresholds = range(50)
+    prune_thresholds = range(10)
     time_sync_accuracies = []
 
     for prune_threshold in prune_thresholds:
@@ -101,7 +101,7 @@ def main():
 
     # 确保在调用绘图函数前accuracies列表已经填充
     if time_sync_accuracies:
-        plot_pruning_threshold_vs_accuracy(prune_thresholds, time_sync_accuracies)
+        plot_pruning_threshold_vs_accuracy(prune_thresholds, time_sync_accuracies, "Time-Sync DTW")
     else:
         print("No time-sync accuracy data available for plotting.")
 
