@@ -35,6 +35,34 @@ class LexTree:
             return True, "Word is spelled correctly."
         else:
             return False, "Word might be spelled incorrectly."
+        
+    def find_suggestions(self, word, beam_width=3):
+        candidates = [(self.root, "", 0)]  # 初始化候选列表（节点，累积单词，评分）
+        suggestions = []  # 最终建议列表
+
+        # 对每个字符进行扩展搜索
+        for char in word:
+            new_candidates = []
+            for node, acc_word, score in candidates:
+                # 检查当前节点的每个子节点
+                for child_char, child_node in node.children.items():
+                    new_score = score + (1 if child_char == char else 0)
+                    new_candidates.append((child_node, acc_word + child_char, new_score))
+            
+            # 保留评分最高的beam_width个候选词
+            candidates = sorted(new_candidates, key=lambda x: x[2], reverse=True)[:beam_width]
+        
+        # 在候选词中找到完整的单词
+        for node, acc_word, score in candidates:
+            if node.is_end_of_word:
+                suggestions.append((acc_word, score))
+        
+        # 按评分排序并返回最佳建议
+        suggestions = sorted(suggestions, key=lambda x: x[1], reverse=True)
+        best_suggestions = [suggestion for suggestion, score in suggestions]
+        
+        return best_suggestions[:beam_width]  # 返回评分最高的几个建议
+
 
 # 使用字典构建词汇树的例子
 if __name__ == "__main__":
