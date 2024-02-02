@@ -62,6 +62,38 @@ class LexTree:
         best_suggestions = [suggestion for suggestion, _ in suggestions]
 
         return best_suggestions[:beam_width]
+    
+    def segment_and_spellcheck(self, text, beam_width=3):
+        # 初始化候选列表，每个候选项包括当前节点、累积单词、评分和单词列表
+        candidates = [(self.root, "", 0, [])]
+        final_candidates = []
+
+        # 逐字符扩展搜索
+        for i, char in enumerate(text):
+            new_candidates = []
+            for node, acc_word, score, words in candidates:
+                if char in node.children:
+                    # 如果当前字符是子节点的一部分，继续构建单词
+                    new_candidates.append((node.children[char], acc_word + char, score, words))
+                if "*" in node.children:
+                    # 也考虑从头开始的情况，即单词的结束
+                    new_candidates.append((self.root, "", score, words + [acc_word]))
+            
+            # 如果到达文本末尾，确保所有候选项都回到根节点并结束当前单词
+            if i == len(text) - 1:
+                final_candidates.extend([(node, acc_word, score, words + [acc_word]) for node, acc_word, score, words in new_candidates if node.is_end_of_word])
+                break
+
+            # 保留评分最高的beam_width个候选词
+            candidates = sorted(new_candidates, key=lambda x: x[2], reverse=True)[:beam_width]
+
+        # 选择最终候选项中的最佳选项
+        best_candidate = min(final_candidates, key=lambda x: x[2] + len(x[3]) - sum(node.is_end_of_word for node, _, _, _ in candidates))
+        _, _, _, best_words = best_candidate
+
+        # 返回分割和拼写检查后的结果
+        corrected_text = " ".join(best_words)
+        return corrected_text
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
