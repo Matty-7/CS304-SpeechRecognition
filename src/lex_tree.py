@@ -2,7 +2,7 @@ class LexTreeNode:
     def __init__(self, char):
         self.char = char  # 当前节点的字符
         self.children = {}  # 子节点字典，键是字符，值是LexTreeNode
-        self.is_end_of_word = False  # 标记这是否是一个单词的结尾
+        self.is_end_of_word = False  
 
 class LexTree:
     def __init__(self):
@@ -14,19 +14,34 @@ class LexTree:
             if char not in node.children:
                 node.children[char] = LexTreeNode(char)
             node = node.children[char]
-        node.is_end_of_word = True  # 单词结束
+        node.is_end_of_word = True 
 
     def build_tree(self, words):
         for word in words:
-            self.add_word("*" + word)  # 添加单词前加上虚拟字符"*"
+            self.add_word("*" + word)
+
+    def search_word(self, word):
+        node = self.root
+        for char in word:
+            if char in node.children:
+                node = node.children[char]
+            else:
+                return False
+            
+        return node.is_end_of_word
 
 # 使用字典构建词汇树的例子
 if __name__ == "__main__":
-    # 假设dict_words是从文件中读取的字典单词列表
-    dict_words = [
-        # 这里填充你从dict_1.txt文件中读取的单词
-    ]
+    dict_file_path = '../lextree/dict_1.txt'
+    dict_words = []
+
+    with open(dict_file_path, 'r', encoding='latin1') as file:
+        for line in file:
+            word = line.strip()
+            if word:
+                dict_words.append(word)
+
     lex_tree = LexTree()
     lex_tree.build_tree(dict_words)
 
-    # 你可以在这里添加更多代码来验证树的构建，例如打印树的结构或者添加单词查询功能
+    # 例如打印树的结构或者添加单词查询功能
