@@ -1,7 +1,6 @@
 import numpy as np
 from hmmlearn import hmm
 
-# 假设n_components是HMM的状态数，n_mix是每个状态的高斯混合数
 n_components = 5
 n_mix = 4  # 每个状态4个高斯混合
 
