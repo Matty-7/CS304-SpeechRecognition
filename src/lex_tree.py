@@ -29,6 +29,12 @@ class LexTree:
                 return False
             
         return node.is_end_of_word
+    
+    def check_spelling(self, word):
+        if self.search_word("*" + word):
+            return True, "Word is spelled correctly."
+        else:
+            return False, "Word might be spelled incorrectly."
 
 # 使用字典构建词汇树的例子
 if __name__ == "__main__":
@@ -43,5 +49,10 @@ if __name__ == "__main__":
 
     lex_tree = LexTree()
     lex_tree.build_tree(dict_words)
+
+    test_words = ["able", "ablle", "abolishing", "abbolishing", "orange"]
+    for word in test_words:
+        correct, message = lex_tree.check_spelling(word)
+        print(f"'{word}': {message}")
 
     # 例如打印树的结构或者添加单词查询功能
