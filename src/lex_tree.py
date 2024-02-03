@@ -64,36 +64,38 @@ class LexTree:
         return best_suggestions[:beam_width]
     
     def segment_and_spellcheck(self, text, beam_width=3):
-        # 初始化候选列表，每个候选项包括当前节点、累积单词、评分和单词列表
-        candidates = [(self.root, "", 0, [])]
-        final_candidates = []
-
-        # 逐字符扩展搜索
-        for i, char in enumerate(text):
+        candidates = [(self.root, "", 0, [])]  # (node, accumulated word, score, list of words)
+        for char in text:
             new_candidates = []
             for node, acc_word, score, words in candidates:
-                if char in node.children:
-                    # 如果当前字符是子节点的一部分，继续构建单词
-                    new_candidates.append((node.children[char], acc_word + char, score, words))
-                if "*" in node.children:
-                    # 也考虑从头开始的情况，即单词的结束
-                    new_candidates.append((self.root, "", score, words + [acc_word]))
+                node_matched = False
+                for child_char, child_node in node.children.items():
+                    if child_char == char:
+                        new_candidates.append((child_node, acc_word + char, score, words))
+                        node_matched = True
+                    elif child_char == '*' and node.is_end_of_word:
+                        # Transition to start a new word, if the current node marks end of a word
+                        new_candidates.append((self.root, char, score, words + [acc_word]))
+                        node_matched = True
+                if not node_matched:
+                    # Penalize unmatched characters
+                    new_candidates.append((node, acc_word + char, score + 1, words))
             
-            # 如果到达文本末尾，确保所有候选项都回到根节点并结束当前单词
-            if i == len(text) - 1:
-                final_candidates.extend([(node, acc_word, score, words + [acc_word]) for node, acc_word, score, words in new_candidates if node.is_end_of_word])
-                break
+            # Prune to keep top beam_width candidates
+            candidates = sorted(new_candidates, key=lambda x: x[2])[:beam_width]
+        
+        # Attempt to finalize words if the last node was end-of-word
+        final_candidates = [(node, acc_word, score, words + [acc_word]) for node, acc_word, score, words in candidates if node.is_end_of_word or acc_word == ""]
 
-            # 保留评分最高的beam_width个候选词
-            candidates = sorted(new_candidates, key=lambda x: x[2], reverse=True)[:beam_width]
+        if not final_candidates:  # Fallback if no ideal candidates found
+            final_candidates = candidates  # This might need more sophisticated handling
 
-        # 选择最终候选项中的最佳选项
-        best_candidate = min(final_candidates, key=lambda x: x[2] + len(x[3]) - sum(node.is_end_of_word for node, _, _, _ in candidates))
+        # Choose the best candidate based on the score; fallback to any candidate if empty
+        best_candidate = sorted(final_candidates, key=lambda x: x[2])[0] if final_candidates else candidates[0]
         _, _, _, best_words = best_candidate
 
-        # 返回分割和拼写检查后的结果
-        corrected_text = " ".join(best_words)
-        return corrected_text
+        return ' '.join(best_words).strip()
+
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
@@ -114,34 +116,46 @@ def levenshtein_distance(s1, s2):
 
     return previous_row[-1]
 
-if __name__ == "__main__":
-    dict_file_path = '../lextree/dict_1.txt'
+def load_dictionary(file_path):
+    """
+    从给定路径加载字典文件。
+    :param file_path: 字典文件的路径。
+    :return: 包含所有字典单词的列表。
+    """
     dict_words = []
-
-    # 从文件加载字典单词到词汇树
-    with open(dict_file_path, 'r', encoding='latin1') as file:
+    with open(file_path, 'r', encoding='latin1') as file:  # 使用'latin1'编码以确保兼容性
         for line in file:
-            word = line.strip()
+            word = line.strip()  # 移除每行末尾的换行符
             if word:  # 确保单词不为空
                 dict_words.append(word)
+    return dict_words
 
+def load_text(file_path):
+    """
+    从给定路径加载文本文件。
+    :param file_path: 文本文件的路径。
+    :return: 文本内容的字符串。
+    """
+    with open(file_path, 'r', encoding='latin1') as file:
+        return file.read().strip()  # 读取整个文件内容，并移除首尾的空白字符
+
+if __name__ == "__main__":
+    # 加载字典
+    dict_words = load_dictionary('../lextree/dict_1.txt')
     lex_tree = LexTree()
     lex_tree.build_tree(dict_words)
 
-    # 测试单词列表，包括正确拼写和错误拼写的单词
-    test_words = ["able", "ablle", "ble", "abolishing", "abbolishing"]
-    
-    for word in test_words:
-        # 首先检查单词拼写是否正确
-        correct, message = lex_tree.check_spelling(word)
-        print(f"'{word}': {message}")
-        
-        # 如果拼写错误，尝试找到建议
-        if not correct:
-            suggestions = lex_tree.find_suggestions(word)
-            if suggestions:
-                print(f"Did you mean: {', '.join(suggestions)}?")
-            else:
-                print("No suggestions available.")
+    # 文件路径
+    unsegmented_files = ['../lextree/unsegmented0.txt', '../lextree/unsegmented.txt']
+    beam_widths = [5, 10, 15]
 
+    # 对每个文件和每个 beam_width 运行实验
+    for file_path in unsegmented_files:
+        text = load_text(file_path)
+        for beam_width in beam_widths:
+            segmented_text = lex_tree.segment_and_spellcheck(text, beam_width)
+            print(f"Results for {file_path} with beam_width {beam_width}:")
+            print(segmented_text)
+            # 评估结果并与正确的分割进行比较
+            # 实现比较和评估的代码部分根据具体需求自定义
 
