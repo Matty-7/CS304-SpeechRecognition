@@ -18,20 +18,26 @@ class LexTree:
 
     def build_tree(self, words):
         for word in words:
-            self.add_word("*" + word)
+            self.add_word(word)  # 移除"*"，直接添加单词
 
-    def print_tree(self, node=None, indent="", last=True):
-        if node is None:
+    def print_tree(self, node=None, indent="", is_last=True, is_root=True):
+        if not node:
             node = self.root
-
-        branches = list(node.children.keys())
-        for i, char in enumerate(branches):
-            is_last = i == (len(branches) - 1)
-            prefix = '--' if is_last else '|--'
-            print(indent + prefix + char)
-            if node.children[char].children:
-                extension = '   ' if is_last else '|  '
-                self.print_tree(node.children[char], indent=indent + extension, last=is_last)
+        
+        # 如果不是根节点，则打印当前节点的字符
+        if not is_root:
+            prefix = '    ' if is_last else '|   '
+            print(indent[:-4] + prefix + '--' + node.char)
+            indent += '    ' if is_last else '|   '
+        
+        # 如果当前节点是单词的结尾，并且有子节点，打印一个竖线
+        if node.is_end_of_word and node.children:
+            print(indent[:-4] + '|')
+        
+        # 递归打印子节点，除了最后一个外，所有的子节点后面都会加'|'
+        child_count = len(node.children)
+        for i, (child_char, child_node) in enumerate(node.children.items(), 1):
+            self.print_tree(child_node, indent, i == child_count, False)
 
     def search_word(self, word):
         node = self.root
@@ -156,8 +162,9 @@ if __name__ == "__main__":
     # 加载字典
     dict_words = load_dictionary('../lextree/dict_1.txt')
     dict_words_5 = dict_words[:5]
+    words = ["a", "an", "and", "apple", "bat", "battle", "banana"]
     lex_tree = LexTree()
-    lex_tree.build_tree(dict_words_5)
+    lex_tree.build_tree(words)
 
     print("Printing the Lexical Tree structure...")
     lex_tree.print_tree()
