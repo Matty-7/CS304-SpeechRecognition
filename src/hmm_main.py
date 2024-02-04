@@ -6,10 +6,10 @@ from hmm_recognition import *
 from audio_utils import *
 
 def hmm_load_features(data_dir):
-    # 创建一个空列表来存储样本对象
+    #创建一个空列表来存储样本对象
     samples = []
 
-    # 循环读取数据并创建样本对象，每个样本对象包括特征数据和标签
+    #*循环读取数据并创建样本对象，每个样本对象包括特征数据和标签
     for file_name in os.listdir(data_dir):
         if file_name.endswith('.npy'):
             # 解析文件名，获取标签信息

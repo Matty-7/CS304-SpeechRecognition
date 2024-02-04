@@ -20,6 +20,19 @@ class LexTree:
         for word in words:
             self.add_word("*" + word)
 
+    def print_tree(self, node=None, indent="", last=True):
+        if node is None:
+            node = self.root
+
+        branches = list(node.children.keys())
+        for i, char in enumerate(branches):
+            is_last = i == (len(branches) - 1)
+            prefix = '--' if is_last else '|--'
+            print(indent + prefix + char)
+            if node.children[char].children:
+                extension = '   ' if is_last else '|  '
+                self.print_tree(node.children[char], indent=indent + extension, last=is_last)
+
     def search_word(self, word):
         node = self.root
         for char in word:
@@ -142,8 +155,12 @@ def load_text(file_path):
 if __name__ == "__main__":
     # 加载字典
     dict_words = load_dictionary('../lextree/dict_1.txt')
+    dict_words_5 = dict_words[:5]
     lex_tree = LexTree()
-    lex_tree.build_tree(dict_words)
+    lex_tree.build_tree(dict_words_5)
+
+    print("Printing the Lexical Tree structure...")
+    lex_tree.print_tree()
 
     # 文件路径
     unsegmented_files = ['../lextree/unsegmented0.txt', '../lextree/unsegmented.txt']
