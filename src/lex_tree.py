@@ -20,24 +20,20 @@ class LexTree:
         for word in words:
             self.add_word(word)  # 移除"*"，直接添加单词
 
-    def print_tree(self, node=None, indent="", is_last=True, is_root=True):
-        if not node:
+    def print_tree(self, node=None, indent="", is_last=True):
+        if node is None:
             node = self.root
         
-        # 如果不是根节点，则打印当前节点的字符
-        if not is_root:
-            prefix = '    ' if is_last else '|   '
-            print(indent[:-4] + prefix + '--' + node.char)
-            indent += '    ' if is_last else '|   '
+        # If not at root, print the current node's character
+        if node != self.root:
+            print(indent + ('|--' if not is_last else '--') + node.char)
+            indent += "    " if is_last else "|   "
         
-        # 如果当前节点是单词的结尾，并且有子节点，打印一个竖线
-        if node.is_end_of_word and node.children:
-            print(indent[:-4] + '|')
-        
-        # 递归打印子节点，除了最后一个外，所有的子节点后面都会加'|'
-        child_count = len(node.children)
-        for i, (child_char, child_node) in enumerate(node.children.items(), 1):
-            self.print_tree(child_node, indent, i == child_count, False)
+        if node.children:
+            last_child = list(node.children.keys())[-1]
+            for child_char in node.children:
+                self.print_tree(node.children[child_char], indent, child_char == last_child)
+
 
     def search_word(self, word):
         node = self.root
