@@ -27,7 +27,7 @@ class LexTree:
         # If not at root, print the current node's character
         if node != self.root:
             print(indent + ('|--' if not is_last else '--') + node.char)
-            indent += "    " if is_last else "|   "
+            indent += "  " if is_last else "|  "
         
         if node.children:
             last_child = list(node.children.keys())[-1]
