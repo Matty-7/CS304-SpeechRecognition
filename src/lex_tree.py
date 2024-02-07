@@ -158,7 +158,8 @@ if __name__ == "__main__":
     # 加载字典
     dict_words = load_dictionary('../lextree/dict_1.txt')
     dict_words_5 = dict_words[:5]
-    words = ["a", "an", "and", "apple", "bat", "battle", "banana"]
+    words = ["*a", "*an", "*and", "*apple", "*bat", "*battle", "*banana"]
+    #words=dict_words_5
     lex_tree = LexTree()
     lex_tree.build_tree(words)
 
