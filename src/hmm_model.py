@@ -56,8 +56,8 @@ class HMM:
         # 转换为对数概率
         self.log_A = np.log(self.A + 1e-6)
         self.log_pi = np.log(self.pi + 1e-6)
-    def add_state(self):
-        
+  #  def add_state(self):
+
     def initialize_parameters(self):
         self.A = np.random.dirichlet(np.ones(self.num_states), self.num_states)
         self.pi = np.random.dirichlet(np.ones(self.num_states))
