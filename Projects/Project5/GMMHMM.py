@@ -1,12 +1,4 @@
-#class of mix info from KMeans
-#Import packages
-import IPython.display as ipd
 import numpy as np
-import pyaudio, wave
-import math
-import matplotlib.pyplot as plt
-from numpy.matlib import repmat
-from scipy.fftpack import dct
 
 def getMFCC2(wavename):#without normalization
     import numpy as np
