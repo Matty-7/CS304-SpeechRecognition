@@ -77,7 +77,7 @@ def capture_audio(stream):
 
 def save_audio(frames, filename):
 
-    recordings_folder = os.path.join(os.pardir, "recordings")
+    recordings_folder = os.path.join(os.pardir, 'Project 5 second problem recordings')
     if not os.path.exists(recordings_folder):
         os.makedirs(recordings_folder, exist_ok=True)
 
@@ -90,32 +90,33 @@ def save_audio(frames, filename):
     wave_file.writeframes(b''.join(frames))
     wave_file.close()
 
-def record_digit(digit, attempts=10):
+def record_digit(digit):
     
-    recordings_dir = 'recordings'
+    recordings_dir = 'Project 5 second problem recordings'
     if not os.path.exists(recordings_dir):
         print(os.path)
         os.makedirs(recordings_dir)
 
     audio, stream = start_audio_stream()
     
-    try:
-        
-        for attempt in range(1, attempts + 1):
-            
-            input(f"Please speak number {digit} and press Enter to start recording, {attempt}th attempts")
 
-            frames, mfccs = capture_audio(stream)
+        
+        
+            
+    input(f"Please speak phone number {digit} and press Enter to start recording")
+
+    frames, mfccs = capture_audio(stream)
 
             #filename = os.path.join(recordings_dir, f"{digit}-{attempt}.wav")
-            filename = os.path.join(f"{digit}-{attempt}.wav")
+    filename = os.path.join(f"{digit}.wav")
             
-            save_audio(frames, filename)
-            print(f"Recording saved to {filename}")
+    save_audio(frames, filename)
+    print(f"Recording saved to {filename}")
 
-    finally:
+ 
         
-        stream.stop_stream()
-        stream.close()
-        audio.terminate()
-        print(f"All recordings for number {digit} have been saved.")
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+    print(f"All recordings for phhone number {digit} have been saved.")
+record_digit(37274921)
