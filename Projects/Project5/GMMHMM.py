@@ -555,5 +555,3 @@ class GMMHMM(object):
 
         # Update the transition for the end point
         self.update_end_transition()
-
-    
