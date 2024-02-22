@@ -2,45 +2,34 @@ import numpy as np
 import scipy.io.wavfile as wav
 from python_speech_features import mfcc
 
-def getMFCC2(wavename):  # Compute MFCC features without normalization
-
-    # Read the audio file
+def getMFCC2(wavename):#without normalization
+    import numpy as np
+    import scipy.io.wavfile as wav
+    from python_speech_features import mfcc
     fs, audio = wav.read(wavename)
-
-    # Compute MFCC features
     feature_mfcc = mfcc(audio, samplerate=fs)
-
-    # Initialize list to store modified MFCC features
-    mfcc_modified = []
-
-    # Append the first and last MFCC feature vectors three times each
-    mfcc_modified.append(np.hstack([feature_mfcc[0], feature_mfcc[0], feature_mfcc[0]]))
-    mfcc_modified.append(np.hstack([feature_mfcc[-1], feature_mfcc[-1], feature_mfcc[-1]]))
-
-    # Compute delta features and append to the modified MFCC features
-    for i in range(1, len(feature_mfcc) - 1):
-        delta = np.zeros(13)
+    mfcc=[]
+    mfcc.append(np.hstack([feature_mfcc[0],feature_mfcc[0],feature_mfcc[0]]))
+    for i in range(1,len(feature_mfcc)-1):
+        delta=np.zeros(13)
         for j in range(13):
-            delta[j] = feature_mfcc[i + 1][j] - feature_mfcc[i - 1][j]
-        mfcc_modified.append(np.hstack([feature_mfcc[i], delta]))
+            delta[j]=feature_mfcc[i+1][j]-feature_mfcc[i-1][j]
+        mfcc.append(np.hstack([feature_mfcc[i],delta]))
+    mfcc.append(np.hstack([feature_mfcc[-1],feature_mfcc[-1],feature_mfcc[-1]]))
 
-    # Compute acceleration features and append to the modified MFCC features
-    for i in range(1, len(mfcc_modified) - 1):
-        acc = np.zeros(13)
+    for i in range(1,len(mfcc)-1):
+        acc=np.zeros(13)
         for j in range(13):
-            acc[j] = mfcc_modified[i + 1][13 + j] - mfcc_modified[i - 1][13 + j]
-        mfcc_modified[i] = np.hstack([mfcc_modified[i], acc])
-
-    # Convert the modified MFCC features to numpy array
-    mfccs = np.array(mfcc_modified)
-
-    # Normalize each feature vector by its variance
-    var = np.var(mfccs, axis=1)
+            acc[j]=mfcc[i+1][13+j]-mfcc[i-1][13+j]
+        mfcc[i]=np.hstack([mfcc[i],acc])
+    mfccs=np.array(mfcc)
+    std=np.std(mfccs)
+    var=np.var(mfccs,1)
     for i in range(len(mfccs)):
         for j in range(39):
-            mfccs[i][j] = mfccs[i][j] / var[i]
-
+            mfccs[i][j]=mfccs[i][j]/var[i]
     return mfccs
+
 
 class mixInfo:
     """Class to store information about Gaussian mixture models."""
@@ -508,50 +497,49 @@ class GMMHMM(object):
         new_transition[self.state_number + 1, self.state_number + 1] = log_probability
         self.hmm.transition_cost = new_transition
 
-    def trainhmm(self):
-        """
-        Train the Hidden Markov Model (HMM) parameters.
+    def GMM_HMM_dtw(self,data,get_track=False):
         
-        Returns:
-            None
-        """
-        # Initialize HMM parameters
-        self.inithmm()
-
-        # Iteratively update the model vectors, covariance, and transition scores
-        previous_best_distance = -np.inf
-        current_best_distance = 0
+        T=self.hmm.transition_cost
+        zeros=np.zeros([39])
+        ones=np.zeros([39])+1
+        mix_of_all_states=[]
         
-        # Iterate for a maximum of 100 times (can be adjusted)
-        for j in range(1, 100):
-            # Update the node state and calculate the best alignment distance
-            for k in range(len(self.templates)):
-                distance, self.node_state[k] = self.GMM_HMM_dtw(self.templates[k], get_track=True)
-                current_best_distance += distance
-            
-            # Update transition costs based on the new node state
-            self.compute_transition_cost(show_result=True)
-            
-            # Update the node distribution in each state
-            self.update_node_in_each_state(show_result=True)
-            
-            # Update the Gaussian Mixture Models (GMMs) for each state
-            GMMS = []
-            for state in range(self.state_number):
-                print("Updating GMM of state {}".format(state + 1))
-                current_state_nodes = self.node_in_each_state[state + 1]
-                current_state_mix = self.GMMKmeans_WithoutEM(current_state_nodes, self.Gaussian_distribution_number[state])
-                GMMS.append(current_state_mix)
-            self.hmm.mix = GMMS  
+        fine_GMM=mixInfo()
+        fine_GMM.Gaussian_mean.append(zeros)
+        
+        fine_GMM.Gaussian_var.append(ones)
+        
+        fine_GMM.Gaussian_weight=[1]
+        
+        fine_GMM.Gaussian_mean=np.array(fine_GMM.Gaussian_mean)
+        fine_GMM.Gaussian_var=np.array(fine_GMM.Gaussian_var)
+        fine_GMM.Num_of_Gaussian = 1
+        mix_of_all_states.append(fine_GMM)
+        for current_mix in self.hmm.mix:
+            mix_of_all_states.append(current_mix)
+        data=np.vstack([zeros,data])
+        
 
-            # Check for convergence
-            difference = previous_best_distance - current_best_distance
-            previous_best_distance = current_best_distance
-            current_best_distance = 0
-            
-            if abs(difference) < 0.0015:
-                print("Used {} iterations to update HMM".format(j))
-                break
+        t=len(mix_of_all_states) 
+        d=len(data)
+        
+        P=np.zeros([t,d])
 
-        # Update the transition for the end point
-        self.update_end_transition()
+        for j in range(0,d): 
+            for i in range(t): 
+                Cij= mixture_log_gaussian(mix_of_all_states[i],data[j])
+                
+                if i-2>=0:
+                    P[i][j]=min(P[i][j-1]+T[i][i],P[i-1][j-1]+T[i-1][i],
+                                P[i-2][j-1]+T[i-2][i])+Cij
+                elif i-1>=0:
+                    P[i][j]=min(P[i][j-1]+T[i][i],P[i-1][j-1]+T[i-1][i])+Cij
+                else:
+                    P[i][j]=P[i][j]+Cij
+        
+        P=P/d
+        distance=P[-1][-1]
+        if get_track:
+            return distance,traceback(P)
+        else:
+            return distance
