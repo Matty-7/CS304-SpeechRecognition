@@ -119,4 +119,4 @@ def record_digit(digit):
     stream.close()
     audio.terminate()
     print(f"All recordings for phhone number {digit} have been saved.")
-record_digit(37274921)
+record_digit(3727492)
