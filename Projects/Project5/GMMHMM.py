@@ -23,7 +23,6 @@ def getMFCC2(wavename):#without normalization
             acc[j]=mfcc[i+1][13+j]-mfcc[i-1][13+j]
         mfcc[i]=np.hstack([mfcc[i],acc])
     mfccs=np.array(mfcc)
-    std=np.std(mfccs)
     var=np.var(mfccs,1)
     for i in range(len(mfccs)):
         for j in range(39):
