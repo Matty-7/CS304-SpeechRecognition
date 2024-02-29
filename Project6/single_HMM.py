@@ -14,11 +14,6 @@ class HMMState:
         """The state is the first state if the `parent` is `None`."""
         self.isNull=isNull
     
-
-   
-
-    
- 
     def log_multivariate_gaussian_pdf_diag_cov(self, x, epsilon=1e-9):
         mean = self.mean
         d = x.shape[0]
@@ -350,7 +345,6 @@ class HMM:
             
             segmented_template=self.segment_based_on_indices(compare_template,indices)
             segmented_templates.append(segmented_template)
-   
 
         score=np.sum(score_total)
         #print(f'len(segmented_templates): {len(segmented_templates)}')
