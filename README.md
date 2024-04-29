@@ -1,5 +1,7 @@
 # CS304-SpeechRecognition
 
+The class is taken at DKU, taught by Prof. Ming Li
+
 The group project by Jingheng Huan and Gezhi Wang
 
 ## Description
